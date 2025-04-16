@@ -1,0 +1,189 @@
+/* General Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f1f5f9;
+  color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  position: relative; /* Ensures that the pseudo-elements are positioned correctly */
+}
+
+/* Outer container with borders on left and right */
+.body-border {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-left: 250px solid#2d3748;
+  border-right: 250px solid #2d3748; /* Right border */
+  pointer-events: none; /* Ensures this does not interfere with other content */
+}
+
+/* Page container that holds the content */
+.page-container {
+  width: 100%;
+  max-width: 1200px; /* Max width for the content */
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  animation: fadeIn 1s ease-in-out;
+}
+
+/* Dream Job Box */
+.dream-job-box {
+  background-color: #e4e8ef;
+  padding: 70px;
+  border-radius: 10px;
+  margin-bottom: 70px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 1.5s ease-in-out;
+  text-align: center;
+}
+
+.dream-job-title {
+  font-size: 15px;
+  color: white;
+  font-weight: bold;
+  text-decoration: underline;
+  font-style: italic;
+}
+
+/* Job Title */
+.job-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #47556d;
+  margin-bottom: 20px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+/* Job Grid */
+.job-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  width: 100%;
+  max-width: 1200px;
+}
+
+/* Job Card */
+.job-card {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  will-change: transform, box-shadow;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.job-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Job Card Content */
+.job-content {
+  padding: 10px;
+}
+
+/* Job Title */
+.job-card-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 10px;
+  text-align: center;
+  transition: color 0.3s ease;
+}
+
+.job-card-title:hover {
+  color: #2d3748;
+}
+
+/* Job Description */
+.job-card-description {
+  font-size: 1rem;
+  color: #6b7280;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Checkbox Label */
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  color: #2d3748;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.checkbox-label input {
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+.checkbox-label:hover {
+  color: #2d3748;
+}
+
+/* Hover and focus effects on checkbox */
+.checkbox-label input:checked {
+  background-color: #2d3748;
+  transition: background-color 0.3s ease;
+}
+
+.checkbox-label input:focus {
+  outline: none;
+  box-shadow: 0 0 5px 2d3748;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.info-button {
+  margin-top: 10px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: bold;
+  color: white; 
+  background-color: #f08db4; /* Blue theme */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.info-button:hover {
+  background-color: #cec3c6; /* Darker blue on hover */
+  transform: scale(1.05);
+}
+
