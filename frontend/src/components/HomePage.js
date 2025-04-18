@@ -1,18 +1,13 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Home.css";
-import Navbar from "../components/Navbar";
 
 const HomePage = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="home-page-container">
-      {/* Use the Navbar component */}
-      <Navbar />
-
-      {/* Full page container with background */}
-      <div className="home-container full-page">
+    <div className="home-container">
+      <div className="home-overlay">
         <div className="home-content">
           <h1>HR Management System</h1>
           <p>Streamline your HR operations with our comprehensive solution</p>
@@ -66,4 +61,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default HomePage; 

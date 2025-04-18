@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import '../styles/Apply.css';
+import '../styles/Home.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { FaBars, FaTimes, FaHome, FaBriefcase, FaChartLine, FaCalendarAlt, FaFileAlt, FaCog, FaSignOutAlt } from "react-icons/fa";
 
 const Apply = () => {
   const navigate = useNavigate();
@@ -12,6 +14,7 @@ const Apply = () => {
     cv: null
   });
   const [fileName, setFileName] = useState('');
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -22,6 +25,10 @@ const Apply = () => {
       ...prev,
       [name]: files ? files[0] : value
     }));
+  };
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
   };
 
   const handleSubmit = async (e) => {
@@ -56,57 +63,109 @@ const Apply = () => {
   };
 
   return (
-    <div className="wrapper">
-      <form className="form" onSubmit={handleSubmit}>
-        <p className="title">Apply for Job</p>
-        <p className="message">Please fill in your details to apply.</p>
-        
-        <label>
-          <input 
-            required 
-            placeholder="" 
-            type="text" 
-            className="input"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-          />
-          <span>Full Name</span>
-        </label>
-
-        <label>
-          <input 
-            required 
-            placeholder="" 
-            type="email" 
-            className="input"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-          />
-          <span>Email</span>
-        </label>
-
-        <label className="file-upload-label">
-          <div className="file-upload-container">
-            <input 
-              required 
-              type="file" 
-              className="file-input"
-              name="cv"
-              accept=".pdf,.doc,.docx"
-              onChange={handleChange}
-            />
-            <div className="file-upload-text">
-              {fileName || 'Upload your CV (PDF or Word)'}
-            </div>
-            <div className="file-upload-button">Upload</div>
+    <div className="homepage-container">
+      {/* Sidebar */}
+      <div className={`homepage-sidebar ${sidebarOpen ? "" : "closed"}`}>
+        <div className="sidebar-header">
+          <h2>HR System</h2>
+          <button className="toggle-btn" onClick={toggleSidebar}>
+            {sidebarOpen ? <FaTimes /> : <FaBars />}
+          </button>
+        </div>
+        <div className="sidebar-menu">
+          <div className="menu-item" onClick={() => navigate("/")}>
+            <FaHome className="menu-icon" />
+            <span className="menu-text">Home</span>
           </div>
-          <span>Upload CV</span>
-        </label>
+          <div className="menu-item" onClick={() => navigate("/job-opportunities")}>
+            <FaBriefcase className="menu-icon" />
+            <span className="menu-text">Job Opportunities</span>
+          </div>
+          <div className="menu-item">
+            <FaChartLine className="menu-icon" />
+            <span className="menu-text">Performance</span>
+          </div>
+          <div className="menu-item">
+            <FaCalendarAlt className="menu-icon" />
+            <span className="menu-text">Leave Management</span>
+          </div>
+          <div className="menu-item">
+            <FaFileAlt className="menu-icon" />
+            <span className="menu-text">Applications</span>
+          </div>
+          <div className="menu-item">
+            <FaCog className="menu-icon" />
+            <span className="menu-text">Settings</span>
+          </div>
+          <div className="menu-item logout">
+            <FaSignOutAlt className="menu-icon" />
+            <span className="menu-text">Logout</span>
+          </div>
+        </div>
+      </div>
 
-        <button className="submit" type="submit">Submit Application</button>
-      </form>
+      {/* Main Content */}
+      <div className={`homepage-main ${sidebarOpen ? "with-sidebar" : "full-width"}`}>
+        <div className="page-container">
+          <div className="wrapper">
+            <form className="form" onSubmit={handleSubmit}>
+              <p className="title">Apply for Job</p>
+              <p className="message">Please fill in your details to apply.</p>
+              
+              <label>
+                <input 
+                  required 
+                  placeholder="" 
+                  type="text" 
+                  className="input"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                />
+                <span>Full Name</span>
+              </label>
+
+              <label>
+                <input 
+                  required 
+                  placeholder="" 
+                  type="email" 
+                  className="input"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                />
+                <span>Email</span>
+              </label>
+
+              <label className="file-upload-label">
+                <div className="file-upload-container">
+                  <input 
+                    required 
+                    type="file" 
+                    className="file-input"
+                    name="cv"
+                    accept=".pdf,.doc,.docx"
+                    onChange={handleChange}
+                  />
+                  <div className="file-upload-text">
+                    {fileName || 'Upload your CV (PDF or Word)'}
+                  </div>
+                  <div className="file-upload-button">Upload</div>
+                </div>
+                <span>Upload CV</span>
+              </label>
+
+              <button className="submit" type="submit">Submit Application</button>
+            </form>
+          </div>
+          <div style={{ marginTop: "30px", marginBottom: "30px" }}>
+            <button className="btn btn-primary" onClick={() => navigate("/job-opportunities")}>
+              Back to Job Opportunities
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

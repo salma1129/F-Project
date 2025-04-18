@@ -9,6 +9,7 @@ import Apply from "./pages/Apply";
 import Leave from "./components/Leave";
 import Manage from "./components/Manage";
 import HomePage from "./pages/HomePage";
+import JobOpportunities from "./pages/JobOpportunities";
 import Users from "./components/Users";
 import VerifyPage from "./components/VerifyPage";
 import AttendanceTracker from "./components/AttendanceTracker";
@@ -46,6 +47,7 @@ function App() {
       <Route path="/dash" element={<Dash />} />
 
         <Route path="/" element={<HomePage />} />
+        <Route path="/job-opportunities" element={<JobOpportunities />} />
         <Route path="/Apply" element={<Apply />} />
         <Route path="/application-success" element={<ApplicationSuccess />} />
         <Route path="/login" element={<Login />} />

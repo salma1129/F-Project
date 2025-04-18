@@ -10,7 +10,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const allowedOrigins = ["http://localhost:3000", "http://127.0.0.1:3001"];
+const allowedOrigins = ["http://localhost:3000", "http://127.0.0.1:3001", "http://localhost:5001"];
 app.use(cors({
     origin: allowedOrigins,
     credentials: true
