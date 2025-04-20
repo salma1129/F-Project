@@ -27,6 +27,8 @@ import ApplicationSuccess from "./pages/ApplicationSuccess";
 
 import { Navigate } from 'react-router-dom';
 import LeaveRequests from "./components/LeaveRequests";
+import AddUserForm from "./components/AddUserForm"; 
+
 
 const ProtectedRoute = ({ children }) => {
   // Check if user is logged in by looking for token in localStorage
@@ -60,10 +62,15 @@ function App() {
           <ProtectedRoute>
             <DashboardUsers/>
           </ProtectedRoute>
+        
         }/>
+
+        <Route path="/AddUserForm" element={<AddUserForm />} /> 
 
 
         <Route path="/EmployeeDashboard" element={<EmployeeDashboard/>}/>
+        <Route path="/AttendanceTracker" element={<AttendanceTracker />} />
+        <Route path="/ControlAccess" element={<ControlAccess />} />
 
 
         
