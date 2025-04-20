@@ -43,7 +43,7 @@ const AddUserForm = ({ onUserAdd }) => {
         <h1>Add New User</h1>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>Name</label>
+            <label style={{ color: '#000' }}>Name</label>
             <input
               type="text"
               name="name"
@@ -51,12 +51,13 @@ const AddUserForm = ({ onUserAdd }) => {
               onChange={handleChange}
               className="form-input"
               placeholder="Enter name"
+              style={{ color: '#fff' }}
             />
             {errors.name && <p className="error-message">{errors.name}</p>}
           </div>
 
           <div className="form-group">
-            <label>Email</label>
+            <label style={{ color: '#000' }}>Email</label>
             <input
               type="email"
               name="email"
@@ -64,12 +65,13 @@ const AddUserForm = ({ onUserAdd }) => {
               onChange={handleChange}
               className="form-input"
               placeholder="Enter email"
+              style={{ color: '#fff' }}
             />
             {errors.email && <p className="error-message">{errors.email}</p>}
           </div>
 
           <div className="form-group">
-            <label>Role</label>
+            <label style={{ color: '#000' }}>Role</label>
             <select name="role" value={user.role} onChange={handleChange} className="form-input">
               <option value="Employee">Employee</option>
               <option value="Manager">Manager</option>
@@ -78,11 +80,16 @@ const AddUserForm = ({ onUserAdd }) => {
           </div>
 
           <div className="form-group">
-            <label>Status</label>
-            <select name="status" value={user.status} onChange={handleChange} className="form-input">
-              <option value="Active">Active</option>
-              <option value="Inactive">Inactive</option>
-            </select>
+            <label style={{ color: '#000' }}>Status</label>
+            <div className="status-container">
+              <div className={`status-indicator ${user.status === "Active" ? "active" : "inactive"}`}>
+                {user.status}
+              </div>
+              <select name="status" value={user.status} onChange={handleChange} className="form-input">
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+            </div>
           </div>
 
           <button type="submit" className="submit-button">

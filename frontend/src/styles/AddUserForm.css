@@ -23,12 +23,19 @@
   .form-container {
     width: 100%;
     max-width: 450px;
+    min-height: 600px;
     background-color: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(5px);
     border-radius: 15px;
     padding: 30px;
     color: white;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
   .form-page-container {
     width: 100%;
@@ -83,9 +90,10 @@
   
   .form-group label {
     display: block;
-    color: #fff;
+    color: #000;
     margin-bottom: 10px;
     font-size: 1.1rem;
+    font-weight: 500;
   }
   
   /* Input Fields */
@@ -107,7 +115,32 @@
   }
   
   .form-input::placeholder {
-    color: rgba(255, 255, 255, 0.6);
+    color: #fff !important;
+    opacity: 1 !important;
+  }
+  
+  /* Select Dropdown */
+  select.form-input {
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.1);
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 20px;
+    padding-right: 40px;
+  }
+  
+  select.form-input option {
+    color: #000;
+    background-color: #fff;
+    padding: 10px;
+  }
+  
+  select.form-input:focus {
+    background-color: rgba(255, 255, 255, 0.15);
   }
   
   /* Error Messages */
@@ -157,4 +190,35 @@
       padding: 12px;
       font-size: 1rem;
     }
+  }
+
+  /* Status Container */
+  .status-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .status-indicator {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    min-width: 100px;
+    text-align: center;
+  }
+
+  .status-indicator.active {
+    background-color: rgba(46, 204, 113, 0.2);
+    color: #2ecc71;
+    border: 2px solid #2ecc71;
+  }
+
+  .status-indicator.inactive {
+    background-color: rgba(231, 76, 60, 0.2);
+    color: #e74c3c;
+    border: 2px solid #e74c3c;
   }
