@@ -3,8 +3,17 @@ const jwt = require('jsonwebtoken');
 
 const auth = (req, res, next) => {
   try {
-    // 1. Get token from header
-    const token = req.header('x-auth-token');
+    // 1. Get token from header (check both x-auth-token and Authorization headers)
+    let token = req.header('x-auth-token');
+    
+    // Also check Authorization header (with Bearer prefix)
+    if (!token && req.headers.authorization) {
+      // Format: "Bearer <token>"
+      const authHeader = req.headers.authorization;
+      if (authHeader.startsWith('Bearer ')) {
+        token = authHeader.substring(7);
+      }
+    }
     
     // 2. Verify token exists
     if (!token) {
@@ -19,6 +28,7 @@ const auth = (req, res, next) => {
     
     next();
   } catch (err) {
+    console.error('Auth middleware error:', err);
     res.status(401).json({ msg: 'Token is not valid' });
   }
 };

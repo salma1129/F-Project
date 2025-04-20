@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const LeaveRequest = require("../models/LeaveRequest");
-const auth = require("../Middleware/auth"); // Fixed casing for Middleware folder
+const auth = require("../Middleware/auth"); 
 
 // GET all leave requests
 router.get("/", auth, async (req, res) => {
@@ -25,7 +25,7 @@ router.post("/", auth, async (req, res) => {
       startDate,
       endDate,
       reason,
-      status: "pending",
+      status: "Pending",
       userId: req.user.id // from auth middleware
     });
 

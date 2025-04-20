@@ -1,4 +1,4 @@
-// middleware/roleCheck.js
+
 const roleCheck = (allowedRoles) => {
     return (req, res, next) => {
       if (!allowedRoles.includes(req.user.role)) {

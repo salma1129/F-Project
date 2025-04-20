@@ -87,6 +87,8 @@ const EmployeeDashboard = () => {
       // Reset form
       setFormData({
         ...formData,
+        name:'',
+        email:'',
         startDate: '',
         endDate: '',
         reason: ''
@@ -188,6 +190,8 @@ const EmployeeDashboard = () => {
                 <table>
                   <thead>
                     <tr>
+                      <th>Name</th>
+                      <th>Email</th>
                       <th>Start Date</th>
                       <th>End Date</th>
                       <th>Reason</th>
@@ -338,6 +342,28 @@ const EmployeeDashboard = () => {
             <div className="leave-request-form">
               <h3>Request Leave</h3>
               <form onSubmit={handleSubmit}>
+              <div className="form-group">
+                <label htmlFor="name">Name</label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="email">Email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+             />
+              </div>
                 <div className="form-group">
                   <label htmlFor="startDate">Start Date</label>
                   <input
