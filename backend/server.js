@@ -7,6 +7,7 @@ const path = require('path');
 
 const app = express();
 
+// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -21,6 +22,7 @@ app.use(cookieParser());
 // Serve static files from the uploads directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Database connection
 mongoose
     .connect(process.env.MONGO_URI)
     .then(() => console.log("MongoDB Connected"))
@@ -29,13 +31,32 @@ mongoose
 // Routes
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/users", require("./routes/userRoutes"));
-const leaveRoutes = require("./routes/leaveRequests");
-app.use("/api/leave-requests", leaveRoutes);
-const applyRoutes = require("./routes/apply");
-app.use("/api/apply", applyRoutes);
+app.use('/api/employees', require('./routes/employee'));
+app.use("/api/leave-requests", require("./routes/leaveRequests"));
+app.use("/api/apply", require("./routes/apply"));
+
 // Test root route
 app.get('/', (req, res) => {
     res.send('Hello from the backend!');
+});
+
+// Global error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    const statusCode = err.statusCode || 500;
+    res.status(statusCode).json({
+        success: false,
+        message: err.message || 'Internal Server Error',
+        stack: process.env.NODE_ENV === 'production' ? '🥞' : err.stack
+    });
+});
+
+// 404 handler for undefined routes
+app.use('*', (req, res) => {
+    res.status(404).json({
+        success: false,
+        message: 'API endpoint not found'
+    });
 });
 
 const PORT = process.env.PORT || 5001;

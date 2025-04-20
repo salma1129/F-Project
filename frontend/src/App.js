@@ -21,7 +21,7 @@ import DashboardHR from "./pages/DashboardHR";
 import TaskController from "./components/TaskController"; 
 import PerformanceController from "./components/PerformanceController";
 import DashboardUsers from "./pages/DashboardUsers";
-import EmployeeDashboard from "./components/EmployeeDashboard";
+import EmployeeDashboard from "./pages/EmployeeDashboard";
 import Dash from "./components/Dash"
 import ApplicationSuccess from "./pages/ApplicationSuccess";
 
