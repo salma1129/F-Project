@@ -180,7 +180,7 @@ const Login = () => {
 
       if (res.ok) {
         localStorage.setItem("token", data.token);
-        navigate("/DashboardUsers"); // Redirect to dashboard after successful login
+        navigate("/EmployeeDashboard"); // Redirect to dashboard after successful login
       } else {
         alert(data.message);
       }

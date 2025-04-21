@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const LeaveRequest = require("../models/LeaveRequest");
-const authMiddleware = require("../routes/authRoutes"); // Optional, if you use auth
+const auth = require("../Middleware/auth"); 
 
 // GET all leave requests
-router.get("/", authMiddleware, async (req, res) => {
+router.get("/", auth, async (req, res) => {
   try {
     const requests = await LeaveRequest.find().sort({ createdAt: -1 });
     res.json(requests);
@@ -14,8 +14,31 @@ router.get("/", authMiddleware, async (req, res) => {
   }
 });
 
+// POST create a new leave request
+router.post("/", auth, async (req, res) => {
+  try {
+    const { name, email, startDate, endDate, reason } = req.body;
+    
+    const newLeaveRequest = new LeaveRequest({
+      name,
+      email,
+      startDate,
+      endDate,
+      reason,
+      status: "Pending",
+      userId: req.user.id // from auth middleware
+    });
+
+    const savedRequest = await newLeaveRequest.save();
+    res.status(201).json(savedRequest);
+  } catch (error) {
+    console.error("Error creating leave request:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 // UPDATE status of a leave request
-router.put("/:id/status", authMiddleware, async (req, res) => {
+router.put("/:id/status", auth, async (req, res) => {
   try {
     const { status } = req.body;
 
@@ -36,6 +59,38 @@ router.put("/:id/status", authMiddleware, async (req, res) => {
     res.json(request);
   } catch (error) {
     console.error("Error updating leave status:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// GET leave request by ID
+router.get("/:id", auth, async (req, res) => {
+  try {
+    const request = await LeaveRequest.findById(req.params.id);
+    
+    if (!request) {
+      return res.status(404).json({ message: "Leave request not found" });
+    }
+
+    res.json(request);
+  } catch (error) {
+    console.error("Error fetching leave request:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// DELETE a leave request
+router.delete("/:id", auth, async (req, res) => {
+  try {
+    const request = await LeaveRequest.findByIdAndDelete(req.params.id);
+    
+    if (!request) {
+      return res.status(404).json({ message: "Leave request not found" });
+    }
+
+    res.json({ message: "Leave request deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting leave request:", error);
     res.status(500).json({ message: "Server error" });
   }
 });

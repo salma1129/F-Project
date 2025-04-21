@@ -20,8 +20,8 @@ import PerformanceTracker from "./components/PerformanceTracker";
 import DashboardHR from "./pages/DashboardHR";
 import TaskController from "./components/TaskController"; 
 import PerformanceController from "./components/PerformanceController";
-import DashboardUsers from "./pages/DashboardUsers";
-import EmployeeDashboard from "./components/EmployeeDashboard";
+/*import DashboardUsers from "./pages/DashboardUsers";*/
+import EmployeeDashboard from "./pages/EmployeeDashboard";
 import Dash from "./components/Dash"
 import ApplicationSuccess from "./pages/ApplicationSuccess";
 
@@ -54,19 +54,19 @@ function App() {
         <Route path="/Apply" element={<Apply />} />
         <Route path="/application-success" element={<ApplicationSuccess />} />
         <Route path="/login" element={<Login />} />
-        {/*<Route path="/dashboard" element={<Dashboard />} />*/}
         <Route path="/Signup" element={<Signup />} />
         <Route path="/forgetpassword" element={<Forgetpass />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/DashboardHR" element={<DashboardHR/>}/>
-        <Route path="/Dashboardmanager" element={
+        <Route path="/EmployeeDashboard" element={
           <ProtectedRoute>
-            <DashboardUsers/>
+            <EmployeeDashboard/>
           </ProtectedRoute>
         
         }/>
 
         <Route path="/AddUserForm" element={<AddUserForm />} /> 
+
 
 
         <Route path="/EmployeeDashboard" element={<EmployeeDashboard/>}/>

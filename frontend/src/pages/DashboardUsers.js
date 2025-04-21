@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import "../styles/DashboardUsers.css";
 import LeaveRequests from "../components/LeaveRequests";
 
 const DashboardUsers = () => {
@@ -18,7 +19,6 @@ const DashboardUsers = () => {
       navigate("/");
     }
   }, [navigate]);
-
 
   const fetchUsers = async () => {
     try {
@@ -246,44 +246,22 @@ const DashboardUsers = () => {
             <i className="fas fa-file-alt"></i>
             <span>Applications</span>
           </li>
-          <li>
-            <i className="fas fa-chart-bar"></i>
-            <span>Analytics</span>
-          </li>
-          <li>
-            <i className="fas fa-cog"></i>
-            <span>Settings</span>
+          <li onClick={handleLogout}>
+            <i className="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
           </li>
         </ul>
       </div>
 
       {/* Main Content */}
       <div className="main-content">
-        {/* Navbar */}
-        <nav className="navbar">
-          <div className="navbar-left">
-            <button 
-              className="toggle-sidebar" 
-              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            >
-              <i className="fas fa-bars"></i>
-            </button>
-            <h1>{activeSection === "users" ? "User Management" : "Leave Requests"}</h1>
-          </div>
-          <div className="navbar-right">
-            <div className="user-profile">
-              <i className="fas fa-user-circle"></i>
-              <span>Recruiter</span>
-            </div>
-            <button className="logout-btn" onClick={handleLogout}>
-              <i className="fas fa-sign-out-alt"></i>
-              Logout
-            </button>
-          </div>
-        </nav>
-
-        {/* Content Area */}
         <div className="content-area">
+          <div className="page-header">
+            <h1>Dashboard</h1>
+            <button className="logout-btn" onClick={handleLogout}>
+              <i className="fas fa-sign-out-alt"></i> Logout
+            </button>
+          </div>
           {renderContent()}
         </div>
       </div>
@@ -291,4 +269,4 @@ const DashboardUsers = () => {
   );
 };
 
-export default DashboardUsers;
+export default DashboardUsers; 
