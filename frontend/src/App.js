@@ -12,7 +12,7 @@ import HomePage from "./pages/HomePage";
 import JobOpportunities from "./pages/JobOpportunities";
 import Users from "./components/Users";
 import VerifyPage from "./components/VerifyPage";
-import AttendanceTracker from "./components/AttendanceTracker";
+import AttendanceTracker from './components/manager/AttendanceTracker';
 import ControlAccess from "./components/ContolAccess";
 import DepartmentManage from "./pages/DepartmentManage";
 import PayrollManager from "./components/PayrollManager";
@@ -30,6 +30,7 @@ import LeaveRequests from "./components/LeaveRequests";
 import AddUserForm from "./components/AddUserForm"; 
 
 import ManageRecruiters from "./components/manager/ManageRecruiters";
+import ManagerDashboard from "./components/manager/ManagerDashboard";
 
 const ProtectedRoute = ({ children }) => {
   // Check if user is logged in by looking for token in localStorage
@@ -70,11 +71,20 @@ function App() {
 
 
         <Route path="/EmployeeDashboard" element={<EmployeeDashboard/>}/>
-        <Route path="/AttendanceTracker" element={<AttendanceTracker />} />
+        <Route path="/AttendanceTracker" element={
+          <ProtectedRoute>
+            <AttendanceTracker />
+          </ProtectedRoute>
+        } />
         <Route path="/ControlAccess" element={<ControlAccess />} />
         <Route path="/Manage" element={<Manage />} />
         <Route path="/Leave" element={<Leave />} />
         <Route path="/ManageRecruiters" element={<ManageRecruiters />} />
+        <Route path="/ManagerDashboard" element={
+          <ProtectedRoute>
+            <ManagerDashboard />
+          </ProtectedRoute>
+        } />
 
 
         
