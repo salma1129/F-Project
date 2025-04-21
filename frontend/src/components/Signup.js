@@ -7,10 +7,10 @@ import '../styles/signup.css';
 // Global Styles
 const GlobalStyle = createGlobalStyle`
   body {
-    background-color: black;
+    background-color: #f1f5f9;
     margin: 0;
     padding: 0;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -36,84 +36,90 @@ const glow = keyframes`
 const StyledWrapper = styled.div`
   .form-container {
     width: 400px;
-    height: 500px;
-    background-color: #fff;
-    border-radius: 15px;
-    padding: 20px 30px;
+    height: auto;
+    min-height: 520px;
+    background-color: white;
+    border-radius: 10px;
+    padding: 30px;
     text-align: center;
     animation: ${floatAnimation} 4s ease-in-out infinite;
-    border: 2px solid transparent;
-    animation: ${glow} 3s infinite alternate;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
   }
 
   .title {
-    font-size: 30px;
-    font-weight: 500;
+    font-size: 2rem;
+    font-weight: 600;
     margin-bottom: 10px;
-    color: black;
-    padding:8px;
-  }
-
-  .sub-title {
-    font-size: 12px;
-    margin-bottom: 20px;
-    color: #666;
+    color: #2d3748;
   }
 
   .form {
     display: flex;
     flex-direction: column;
     gap: 15px;
+    margin-bottom: 10px;
   }
 
   .input {
-    border-radius: 25px;
-    border: 2px solid #c0c0c0;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
     padding: 12px 15px;
     transition: all 0.3s ease-in-out;
     outline: none;
+    background-color: #f8fafc;
+    color: #2d3748;
   }
 
   .input:focus {
-    border-color: teal;
-    box-shadow: 0 0 8px teal;
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
   }
 
   .form-btn {
     padding: 12px 15px;
-    border-radius: 25px;
+    border-radius: 8px;
     border: none;
-    background: teal;
+    background: #3498db;
     color: white;
     cursor: pointer;
     font-size: 16px;
+    font-weight: 600;
     transition: all 0.3s ease-in-out;
   }
 
   .form-btn:hover {
-    background:rgb(10, 72, 74);
-    transform: scale(1.05);
-    box-shadow: 0 0 10px #747474;
+    background: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
   }
 
   .sign-up-label {
-    font-size: 16px;
-    color: #747474;
-    padding:8px;
+    font-size: 14px;
+    color: #2d3748;
+    margin-top: 5px;
   }
 
   .sign-up-link {
-    color: teal;
+    color: #3498db;
     cursor: pointer;
-    font-weight: 800;
+    font-weight: 500;
+    text-decoration: none;
+    margin-left: 8px;
+  }
+
+  .sign-up-link:hover {
     text-decoration: underline;
   }
 
   .buttons-container {
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    margin-top: 20px;
+    gap: 12px;
+    margin: 15px 0;
+    width: 100%;
   }
 
   .apple-login-button,
@@ -121,44 +127,63 @@ const StyledWrapper = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 8px;
+    gap: 12px;
     border-radius: 25px;
     padding: 12px 15px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 16px;
+    font-weight: 500;
     transition: all 0.3s ease-in-out;
+    width: 100%;
   }
 
   .apple-login-button {
-    background: black;
+    background: #000000;
     color: white;
-    border: 2px solid black;
+    border: none;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   }
 
   .apple-login-button:hover {
-    background: white;
-    color: black;
-    border-color: black;
+    background: #333333;
   }
 
   .google-login-button {
-    border: 2px solid #747474;
+    background: white;
+    color: #3c4043;
+    border: 1px solid #dadce0;
+    font-family: 'Roboto', sans-serif;
   }
 
   .google-login-button:hover {
-    border-color: teal;
-    color: teal;
+    background: #f8f9fa;
+    border-color: #dadce0;
+    box-shadow: 0 1px 3px rgba(60,64,67,0.3);
   }
 `;
+
+const SignupStyledWrapper = styled(StyledWrapper)`
+  .form-container {
+    min-height: 420px;
+    padding: 20px;
+  }
+
+  .buttons-container {
+    margin: 10px 0;
+  }
+
+  .form {
+    gap: 10px;
+  }
+`;
+
 const Signup = () => {
-    const navigate = useNavigate(); // Initialize navigate
-    const handleLogin = () => {
-      navigate("/login");
-    };
+  const navigate = useNavigate();
+  
   return (
     <>
       <GlobalStyle />
-      <StyledWrapper>
+      <SignupStyledWrapper>
         <div className="form-container">
           <p className="title">Sign up</p>
           <form className="form">
@@ -167,20 +192,24 @@ const Signup = () => {
             <input type="password" className="input" placeholder="Password" />
             <button className="form-btn">Create account</button>
           </form>
-          <p className="sign-up-label">
-            Already have an account? <span className="sign-up-link"onClick={handleLogin}>Log in</span>
-          </p>
-         
+
           <div className="buttons-container">
-            <div className="apple-login-button">
+            <button className="apple-login-button">
               <FaApple size={20} /> Sign up with Apple
-            </div>
-            <div className="google-login-button">
+            </button>
+            <button className="google-login-button">
               <FaGoogle size={20} /> Sign up with Google
-            </div>
+            </button>
           </div>
+
+          <p className="sign-up-label">
+            Already have an account?
+            <span className="sign-up-link" onClick={() => navigate("/login")}>
+              Log in
+            </span>
+          </p>
         </div>
-      </StyledWrapper>
+      </SignupStyledWrapper>
     </>
   );
 };
