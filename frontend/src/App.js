@@ -6,7 +6,7 @@ import Dashboard from "./pages/Dashboard";
 import Forgetpass from "./pages/Forgetpass";
 import Admin from "./pages/Admin";
 import Apply from "./pages/Apply";
-import Leave from "./components/Leave";
+import Leave from "./components/manager/Leave";
 import Manage from "./components/Manage";
 import HomePage from "./pages/HomePage";
 import JobOpportunities from "./pages/JobOpportunities";
@@ -29,6 +29,7 @@ import { Navigate } from 'react-router-dom';
 import LeaveRequests from "./components/LeaveRequests";
 import AddUserForm from "./components/AddUserForm"; 
 
+import ManageRecruiters from "./components/manager/ManageRecruiters";
 
 const ProtectedRoute = ({ children }) => {
   // Check if user is logged in by looking for token in localStorage
@@ -71,6 +72,9 @@ function App() {
         <Route path="/EmployeeDashboard" element={<EmployeeDashboard/>}/>
         <Route path="/AttendanceTracker" element={<AttendanceTracker />} />
         <Route path="/ControlAccess" element={<ControlAccess />} />
+        <Route path="/Manage" element={<Manage />} />
+        <Route path="/Leave" element={<Leave />} />
+        <Route path="/ManageRecruiters" element={<ManageRecruiters />} />
 
 
         
