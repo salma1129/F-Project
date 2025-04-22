@@ -164,7 +164,7 @@ const EmployeeDashboard = () => {
       {/* Sidebar */}
       <div className={`homepage-sidebar ${sidebarOpen ? "" : "closed"}`}>
         <div className="sidebar-header">
-          <h2>Employee Portal</h2>
+          <h2>Employee </h2>
           <button className="toggle-btn" onClick={toggleSidebar}>
             {sidebarOpen ? <FaTimes /> : <FaBars />}
           </button>
