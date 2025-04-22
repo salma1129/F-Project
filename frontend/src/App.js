@@ -33,6 +33,7 @@ import ManageRecruiters from "./components/manager/ManageRecruiters";
 import ManagerDashboard from "./components/manager/ManagerDashboard";
 
 
+
 const ProtectedRoute = ({ children }) => {
   // Check if user is logged in by looking for token in localStorage
   const isAuthenticated = localStorage.getItem('token');
@@ -86,6 +87,7 @@ function App() {
             <ManagerDashboard />
           </ProtectedRoute>
         } />
+        <Route path="/PayrollManager" element={<PayrollManager />} />
 
 
         
