@@ -9,6 +9,9 @@ const sendEmail = async (to, subject, html) => {
         pass: process.env.EMAIL_PASS,
       },
       debug: true,
+      tls: {
+        rejectUnauthorized: false
+      }
     });
 
     const mailOptions = {
@@ -17,6 +20,7 @@ const sendEmail = async (to, subject, html) => {
       subject,
       html,
     };
+    console.log("cc")
 
     await transporter.sendMail(mailOptions);
     console.log("Email sent to:", to);

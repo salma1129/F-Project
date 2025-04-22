@@ -93,8 +93,8 @@ body {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   will-change: transform, box-shadow;
   cursor: pointer;
-  overflow: hidden;
 }
+
 
 .job-card:hover {
   transform: translateY(-10px);
@@ -360,9 +360,9 @@ body {
 }
 
 .btn {
-  width: 100%;
+  width: 20%;
   padding: 14px;
-  border-radius: 8px;
+  border-radius: 20px;
   border: none;
   font-size: 1.1rem;
   font-weight: 600;

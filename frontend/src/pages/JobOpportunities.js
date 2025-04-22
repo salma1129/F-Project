@@ -31,45 +31,60 @@ const JobOpportunities = () => {
   };
 
   return (
-    <>
-      <div><Navbar /></div>
-      <div className="body-border" /> 
-      <div className="page-container">
-        <div className="dream-job-box">
-          <div className="centered-paragraph">
-            <p style={{ color: "black", fontSize: "20px", textAlign: "center" }}>
-              Unlock your future with exciting job opportunities that match your skills and passion! Whether you're looking to innovate as a software developer, shape the future of design, or analyze the world of data, our platform connects you with top employers in the tech industry. Explore a range of dynamic positions and take the first step towards your dream career today!
-            </p>
+    <div className="home-page-container">
+      <Navbar />
+      
+      <div className="home-container full-page">
+        <div className="home-content" style={{ paddingTop: "100px" }}>
+          <h1>IT Job Opportunities</h1>
+          <p>Unlock your future with exciting job opportunities that match your skills and passion!</p>
+          
+          <div className="job-grid" style={{ justifyContent: "center", margin: "0 auto", maxWidth: "1200px", display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "20px" }}>
+            {jobs.map((job, index) => (
+              <Card key={index} className="feature-card job-card" style={{ display: "flex", flexDirection: "column", height: "100%", margin: "10px", textAlign: "center" }}>
+                <CardContent className="job-content" style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%", padding: "20px" }}>
+                  <div>
+                    <h3 className="job-card-title">{job.title}</h3>
+                    <p className="job-card-description">{job.description}</p>
+                  </div>
+                  <div>
+                    <label className="checkbox-label" style={{ margin: "15px 0", color: "white" }}>
+                      <input
+                        type="checkbox"
+                        checked={selectedJobs.includes(job.title)}
+                        onChange={() => handleCheckboxChange(job.title)}
+                      />
+                      Select this job
+                    </label>
+                    <button 
+                      className="btn" 
+                      style={{ 
+                        backgroundColor: "#2c3e50", 
+                        color: "white", 
+                        padding: "8px 16px", 
+                        borderRadius: "5px",
+                        border: "none",
+                        cursor: "pointer",
+                        transition: "all 0.3s ease-in-out"
+                      }} 
+                      onClick={() => navigate("/Apply")}
+                    >
+                      Apply
+                    </button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+          
+          <div className="home-buttons" style={{ marginTop: "30px", marginBottom: "30px" }}>
+            <button className="btn btn-primary" onClick={() => navigate("/")}>
+              Back to Home
+            </button>
           </div>
         </div>
-        <h1 className="job-title">IT Job Opportunities</h1>
-        <div className="job-grid">
-          {jobs.map((job, index) => (
-            <Card key={index} className="job-card">
-              <CardContent className="job-content">
-                <h2 className="job-card-title">{job.title}</h2>
-                <p className="job-card-description">{job.description}</p>
-                <label className="checkbox-label">
-                  <input
-                    type="checkbox"
-                    checked={selectedJobs.includes(job.title)}
-                    onChange={() => handleCheckboxChange(job.title)}
-                  />
-                  Select this job
-                </label>
-                {/* Apply Button */}
-                <button className="info-button" onClick={() => navigate("/Apply")}>Apply</button>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-        <div style={{ marginTop: "30px", marginBottom: "30px" }}>
-          <button className="btn btn-primary" onClick={() => navigate("/")}>
-            Back to Home
-          </button>
-        </div>
       </div>
-    </>
+    </div>
   );
 };
 
