@@ -6,40 +6,28 @@ import Dashboard from "./pages/Dashboard";
 import Forgetpass from "./pages/Forgetpass";
 import Admin from "./pages/Admin";
 import Apply from "./pages/Apply";
-import Leave from "./components/manager/Leave";
-import Manage from "./components/Manage";
 import HomePage from "./pages/HomePage";
 import JobOpportunities from "./pages/JobOpportunities";
 import Users from "./components/Users";
 import VerifyPage from "./components/VerifyPage";
-import AttendanceTracker from './components/manager/AttendanceTracker';
 import ControlAccess from "./components/ContolAccess";
 import DepartmentManage from "./pages/DepartmentManage";
-import PayrollManager from "./components/PayrollManager";
 import PerformanceTracker from "./components/PerformanceTracker";
 import DashboardHR from "./pages/DashboardHR";
 import TaskController from "./components/TaskController"; 
 import PerformanceController from "./components/PerformanceController";
-/*import DashboardUsers from "./pages/DashboardUsers";*/
 import EmployeeDashboard from "./pages/EmployeeDashboard";
 import Dash from "./components/Dash"
 import ApplicationSuccess from "./pages/ApplicationSuccess";
-
 import { Navigate } from 'react-router-dom';
 import LeaveRequests from "./components/LeaveRequests";
 import AddUserForm from "./components/AddUserForm"; 
-
-import ManageRecruiters from "./components/manager/ManageRecruiters";
 import ManagerDashboard from "./components/manager/ManagerDashboard";
 
-
-
 const ProtectedRoute = ({ children }) => {
-  // Check if user is logged in by looking for token in localStorage
   const isAuthenticated = localStorage.getItem('token');
 
   if (!isAuthenticated) {
-    // Redirect to login if not authenticated
     return <Navigate to="/login" replace />;
   }
 
@@ -50,48 +38,81 @@ function App() {
   return (
     <Router>
       <Routes>
-      <Route path="/dash" element={<Dash />} />
-
         <Route path="/" element={<HomePage />} />
-        <Route path="/job-opportunities" element={<JobOpportunities />} />
-        <Route path="/Apply" element={<Apply />} />
-        <Route path="/application-success" element={<ApplicationSuccess />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/Signup" element={<Signup />} />
-        <Route path="/forgetpassword" element={<Forgetpass />} />
-        <Route path="/admin" element={<Admin />} />
-        <Route path="/DashboardHR" element={<DashboardHR/>}/>
-        <Route path="/EmployeeDashboard" element={
-          <ProtectedRoute>
-            <EmployeeDashboard/>
-          </ProtectedRoute>
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/forgetpass" element={<Forgetpass />} />
+        <Route path="/verify" element={<VerifyPage />} />
+        <Route path="/apply" element={<Apply />} />
+        <Route path="/application-success" element={<ApplicationSuccess />} />
+        <Route path="/job-opportunities" element={<JobOpportunities />} />
         
-        }/>
-
-        <Route path="/AddUserForm" element={<AddUserForm />} /> 
-
-
-
-        <Route path="/EmployeeDashboard" element={<EmployeeDashboard/>}/>
-        <Route path="/AttendanceTracker" element={
+        {/* Protected Routes */}
+        <Route path="/dashboard" element={
           <ProtectedRoute>
-            <AttendanceTracker />
+            <Dashboard />
           </ProtectedRoute>
         } />
-        <Route path="/ControlAccess" element={<ControlAccess />} />
-        <Route path="/Manage" element={<Manage />} />
-        <Route path="/Leave" element={<Leave />} />
-        <Route path="/ManageRecruiters" element={<ManageRecruiters />} />
+        <Route path="/admin" element={
+          <ProtectedRoute>
+            <Admin />
+          </ProtectedRoute>
+        } />
         <Route path="/ManagerDashboard" element={
           <ProtectedRoute>
             <ManagerDashboard />
           </ProtectedRoute>
         } />
-        <Route path="/PayrollManager" element={<PayrollManager />} />
-
-
-        
-
+        <Route path="/employee" element={
+          <ProtectedRoute>
+            <EmployeeDashboard />
+          </ProtectedRoute>
+        } />
+        <Route path="/hr" element={
+          <ProtectedRoute>
+            <DashboardHR />
+          </ProtectedRoute>
+        } />
+        <Route path="/users" element={
+          <ProtectedRoute>
+            <Users />
+          </ProtectedRoute>
+        } />
+        <Route path="/control-access" element={
+          <ProtectedRoute>
+            <ControlAccess />
+          </ProtectedRoute>
+        } />
+        <Route path="/department-manage" element={
+          <ProtectedRoute>
+            <DepartmentManage />
+          </ProtectedRoute>
+        } />
+        <Route path="/performance-tracker" element={
+          <ProtectedRoute>
+            <PerformanceTracker />
+          </ProtectedRoute>
+        } />
+        <Route path="/task-controller" element={
+          <ProtectedRoute>
+            <TaskController />
+          </ProtectedRoute>
+        } />
+        <Route path="/performance-controller" element={
+          <ProtectedRoute>
+            <PerformanceController />
+          </ProtectedRoute>
+        } />
+        <Route path="/leave-requests" element={
+          <ProtectedRoute>
+            <LeaveRequests />
+          </ProtectedRoute>
+        } />
+        <Route path="/add-user" element={
+          <ProtectedRoute>
+            <AddUserForm />
+          </ProtectedRoute>
+        } />
       </Routes>
     </Router>
   );
