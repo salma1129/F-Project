@@ -47,72 +47,20 @@ function App() {
         <Route path="/application-success" element={<ApplicationSuccess />} />
         <Route path="/job-opportunities" element={<JobOpportunities />} />
         
-        {/* Protected Routes */}
-        <Route path="/dashboard" element={
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        } />
-        <Route path="/admin" element={
-          <ProtectedRoute>
-            <Admin />
-          </ProtectedRoute>
-        } />
-        <Route path="/ManagerDashboard" element={
-          <ProtectedRoute>
-            <ManagerDashboard />
-          </ProtectedRoute>
-        } />
-        <Route path="/employee" element={
-          <ProtectedRoute>
-            <EmployeeDashboard />
-          </ProtectedRoute>
-        } />
-        <Route path="/hr" element={
-          <ProtectedRoute>
-            <DashboardHR />
-          </ProtectedRoute>
-        } />
-        <Route path="/users" element={
-          <ProtectedRoute>
-            <Users />
-          </ProtectedRoute>
-        } />
-        <Route path="/control-access" element={
-          <ProtectedRoute>
-            <ControlAccess />
-          </ProtectedRoute>
-        } />
-        <Route path="/department-manage" element={
-          <ProtectedRoute>
-            <DepartmentManage />
-          </ProtectedRoute>
-        } />
-        <Route path="/performance-tracker" element={
-          <ProtectedRoute>
-            <PerformanceTracker />
-          </ProtectedRoute>
-        } />
-        <Route path="/task-controller" element={
-          <ProtectedRoute>
-            <TaskController />
-          </ProtectedRoute>
-        } />
-        <Route path="/performance-controller" element={
-          <ProtectedRoute>
-            <PerformanceController />
-          </ProtectedRoute>
-        } />
-        <Route path="/leave-requests" element={
-          <ProtectedRoute>
-            <LeaveRequests />
-          </ProtectedRoute>
-        } />
-        <Route path="/add-user" element={
-          <ProtectedRoute>
-            <AddUserForm />
-          </ProtectedRoute>
-        } />
+        {/* Routes */}
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/admin" element={<Admin />} />
+        <Route path="/ManagerDashboard" element={<ManagerDashboard />} />
+        <Route path="/employee" element={<EmployeeDashboard />} />
+        <Route path="/hr" element={<DashboardHR />} />
+        <Route path="/users" element={<Users />} />
+        <Route path="/control-access" element={<ControlAccess />} />
+        <Route path="/department-manage" element={<DepartmentManage />} />
+        <Route path="/performance-tracker" element={<PerformanceTracker />} />
+        <Route path="/task-controller" element={<TaskController />} />
+        <Route path="/performance-controller" element={<PerformanceController />} />
+        <Route path="/leave-requests" element={<LeaveRequests />} />
+        <Route path="/add-user" element={<AddUserForm />} />
       </Routes>
     </Router>
   );
