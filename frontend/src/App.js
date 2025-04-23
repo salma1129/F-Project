@@ -41,6 +41,13 @@ function App() {
       <Routes>
         <Route path="/dash" element={<Dash />} />
         <Route path="/" element={<HomePage />} />
+
+        <Route path="/job-opportunities" element={<JobOpportunities />} />
+        <Route path="/leave" element={<Leave />} />
+
+        <Route path="/Apply" element={<Apply />} />
+        <Route path="/application-success" element={<ApplicationSuccess />} />
+
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/forgetpass" element={<Forgetpass />} />

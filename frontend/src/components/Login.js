@@ -7,16 +7,16 @@ import "../styles/signup.css";
 // Global Styles
 const GlobalStyle = createGlobalStyle`
   body {
-    background-color: black;
+    background-color: #f1f5f9;
     margin: 0;
     padding: 0;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
   }
-`;
+  `;
 
 // Floating Animation
 const floatAnimation = keyframes`
@@ -25,6 +25,7 @@ const floatAnimation = keyframes`
   100% { transform: translateY(0px); }
 `;
 
+
 // Glow Animation
 const glow = keyframes`
   0% { box-shadow: 0 0 5px teal, 0 0 10px teal, 0 0 15px teal; }
@@ -32,88 +33,92 @@ const glow = keyframes`
   100% { box-shadow: 0 0 5px teal, 0 0 10px teal, 0 0 15px teal; }
 `;
 
+
 // Styled Wrapper
 const StyledWrapper = styled.div`
   .form-container {
-    width: 400px;
-    height: 520px;
-    background-color: #fff;
-    border-radius: 15px;
-    padding: 20px 30px;
+    width: 380px;
+    height: auto;
+    min-height: 450px;
+    background-color: white;
+    border-radius: 10px;
+    padding: 25px;
     text-align: center;
     animation: ${floatAnimation} 4s ease-in-out infinite;
-    border: 2px solid transparent;
-    animation: ${glow} 3s infinite alternate;
+    box-shadow: 0 8px 32px rgba(86, 145, 255, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
   }
 
   .title {
-    font-size: 30px;
-    font-weight: 500;
-    margin-bottom: 10px;
-    color: black;
-    padding: 8px;
-  }
-
-  .sub-title {
-    font-size: 12px;
-    margin-bottom: 20px;
-    color: #666;
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #2d3748;
   }
 
   .form {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 12px;
+    margin-bottom: 8px;
   }
 
   .input {
-    border-radius: 25px;
-    border: 2px solid #c0c0c0;
-    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    padding: 10px 12px;
     transition: all 0.3s ease-in-out;
     outline: none;
+    background-color: #f8fafc;
+    color: #2d3748;
   }
 
   .input:focus {
-    border-color: teal;
-    box-shadow: 0 0 8px teal;
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
   }
 
   .form-btn {
-    padding: 12px 15px;
-    border-radius: 25px;
+    padding: 10px 12px;
+    border-radius: 8px;
     border: none;
-    background: teal;
+    background: #3498db;
     color: white;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 15px;
+    font-weight: 600;
     transition: all 0.3s ease-in-out;
   }
 
   .form-btn:hover {
-    background: rgb(10, 72, 74);
-    transform: scale(1.05);
-    box-shadow: 0 0 10px #747474;
+    background: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
   }
 
-  .sign-up-label {
-    font-size: 16px;
-    color: #747474;
-    padding: 8px;
-  }
-
-  .sign-up-link {
-    color: teal;
+  .forgot-password {
+    color: #e74c3c;
+    font-size: 13px;
     cursor: pointer;
-    font-weight: 800;
-    text-decoration: underline;
+    text-align: right;
+    margin-top: -8px;
+    margin-bottom: 8px;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .forgot-password:hover {
+    color: #c0392b;
   }
 
   .buttons-container {
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    margin-top: 20px;
+    gap: 10px;
+    margin: 12px 0;
+    width: 100%;
   }
 
   .apple-login-button,
@@ -122,41 +127,55 @@ const StyledWrapper = styled.div`
     justify-content: center;
     align-items: center;
     gap: 8px;
-    border-radius: 25px;
-    padding: 12px 15px;
+    border-radius: 8px;
+    padding: 10px 12px;
     cursor: pointer;
     font-size: 14px;
+    font-weight: 500;
     transition: all 0.3s ease-in-out;
-  }
- .forgot-password {
-    color: red;
-    font-size: 16px;
-    cursor: pointer;
-    text-align: right;
-    margin-top: -10px;
-    margin-bottom: 10px;
-    text-decoration:underline;
+    width: 100%;
   }
 
   .apple-login-button {
-    background: black;
+    background: #000000;
     color: white;
-    border: 2px solid black;
+    border: none;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   }
 
   .apple-login-button:hover {
-    background: white;
-    color: black;
-    border-color: black;
+    background: #333333;
   }
 
   .google-login-button {
-    border: 2px solid #747474;
+    background: white;
+    color: #3c4043;
+    border: 1px solid #dadce0;
+    font-family: 'Roboto', sans-serif;
   }
 
   .google-login-button:hover {
-    border-color: teal;
-    color: teal;
+    background: #f8f9fa;
+    border-color: #dadce0;
+    box-shadow: 0 1px 3px rgba(60,64,67,0.3);
+  }
+
+  .sign-up-label {
+    font-size: 13px;
+    color: #2d3748;
+    margin-top: 5px;
+  }
+
+  .sign-up-link {
+    color: #3498db;
+    cursor: pointer;
+    font-weight: 500;
+    text-decoration: none;
+    margin-left: 5px;
+  }
+
+  .sign-up-link:hover {
+    text-decoration: underline;
   }
 `;
 
@@ -168,26 +187,26 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try {
-      const res = await fetch("http://localhost:5001/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-        credentials: "include",
-      });
+try {
+  const res = await fetch("http://localhost:5001/api/auth/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+    credentials: "include",
+  });
 
-      const data = await res.json();
+  const data = await res.json();
 
-      if (res.ok) {
-        localStorage.setItem("token", data.token);
-        navigate("/EmployeeDashboard"); // Redirect to dashboard after successful login
-      } else {
-        alert(data.message);
-      }
-    } catch (error) {
-      console.error("Error logging in:", error);
-      alert("An error occurred");
-    }
+  if (res.ok) {
+    localStorage.setItem("token", data.token);
+    navigate("/EmployeeDashboard"); // Redirect to dashboard after successful login
+  } else {
+    alert(data.message);
+  }
+} catch (error) {
+  console.error("Error logging in:", error);
+  alert("An error occurred");
+}
   };
 
   // Navigate to Sign Up page
@@ -229,22 +248,24 @@ const Login = () => {
             <button type="submit" className="form-btn">Login</button>
           </form>
 
-          <div className="buttons-container">
-            <div className="apple-login-button">
-              <FaApple size={20} /> Login with Apple
-            </div>
-            <div className="google-login-button">
-              <FaGoogle size={20} /> Login with Google
-            </div>
-          </div>
+      <div className="buttons-container">
+        <button className="apple-login-button">
+          <FaApple size={20} /> Login with Apple
+        </button>
+        <button className="google-login-button">
+          <FaGoogle size={20} /> Login with Google
+        </button>
+      </div>
 
-          <p className="sign-up-label">
-            Don't have an account?
-            <span className="sign-up-link" onClick={() => navigate("/Signup")}>Sign up</span>
-          </p>
-        </div>
-      </StyledWrapper>
-    </>
+      <p className="sign-up-label">
+        Don't have an account?
+        <span className="sign-up-link" onClick={() => navigate("/Signup")}>
+          Sign up
+        </span>
+      </p>
+    </div>
+  </StyledWrapper>
+</>
   );
 };
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/EmployeeDashboard.css';
 import { 
@@ -35,6 +35,52 @@ const EmployeeDashboard = () => {
   const [editingProfile, setEditingProfile] = useState(false);
   const [activeSection, setActiveSection] = useState('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    // Fetch user data from backend when component mounts
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          navigate('/login');
+          return;
+        }
+
+        const response = await fetch('http://localhost:5001/api/users/me', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch user data');
+        }
+
+        const data = await response.json();
+        setUserData(data);
+        
+        // Update profile data with fetched user data
+        setProfileData(prevState => ({
+          ...prevState,
+          name: data.name || prevState.name,
+          email: data.email || prevState.email
+        }));
+        
+        // Update form data with fetched user data
+        setFormData(prevState => ({
+          ...prevState,
+          name: data.name || prevState.name,
+          email: data.email || prevState.email
+        }));
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
+    fetchUserData();
+  }, [navigate]);
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -118,7 +164,7 @@ const EmployeeDashboard = () => {
       {/* Sidebar */}
       <div className={`homepage-sidebar ${sidebarOpen ? "" : "closed"}`}>
         <div className="sidebar-header">
-          <h2>Employee Portal</h2>
+          <h2>Employee </h2>
           <button className="toggle-btn" onClick={toggleSidebar}>
             {sidebarOpen ? <FaTimes /> : <FaBars />}
           </button>
@@ -164,7 +210,7 @@ const EmployeeDashboard = () => {
         {activeSection === 'dashboard' ? (
           <div className="dashboard-content">
             <div className="dashboard-header">
-              <h1>Welcome to Your Dashboard</h1>
+              <h1>Welcome {profileData.name}</h1>
               <div className="user-info">
                 <span className="user-name">{profileData.name}</span>
                 <span className="user-role">{profileData.role}</span>
