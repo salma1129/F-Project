@@ -1,6 +1,8 @@
+// CreateJobOffering.js
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from 'styled-components';
+import '../../styles/ManagerDashboard.css';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -101,6 +103,70 @@ const ContentCard = styled.div`
   padding: 15px;
 `;
 
+const FormContainer = styled.div`
+  margin-bottom: 20px;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 15px;
+  border-radius: 8px;
+
+  form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+`;
+
+const FormGroup = styled.div`
+  label {
+    display: block;
+    color: #3498db;
+    margin-bottom: 6px;
+    font-size: 0.9rem;
+  }
+
+  input, textarea {
+    width: 100%;
+    padding: 8px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    color: white;
+    font-size: 0.9rem;
+
+    &:focus {
+      outline: none;
+      border-color: #3498db;
+    }
+
+    &::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+  }
+
+  textarea {
+    min-height: 100px;
+    resize: vertical;
+  }
+`;
+
+const SubmitButton = styled.button`
+  background-color: #3498db;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  grid-column: 1 / -1;
+  width: fit-content;
+  justify-self: end;
+
+  &:hover {
+    background-color: #2980b9;
+  }
+`;
+
 const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
@@ -126,7 +192,7 @@ const Table = styled.table`
   }
 `;
 
-const Button = styled.button`
+const ActionButton = styled.button`
   padding: 6px 12px;
   border: none;
   border-radius: 4px;
@@ -134,10 +200,8 @@ const Button = styled.button`
   cursor: pointer;
   transition: all 0.3s;
   margin: 0 4px;
-`;
-
-const ActionButton = styled(Button)`
-  &.approve {
+  
+  &.edit {
     background-color: #2ecc71;
     color: white;
     &:hover {
@@ -145,101 +209,36 @@ const ActionButton = styled(Button)`
     }
   }
 
-  &.reject {
+  &.delete {
     background-color: #e74c3c;
     color: white;
     &:hover {
       background-color: #c0392b;
     }
   }
-
-  &.pending {
-    background-color: #f1c40f;
-    color: #2c3e50;
-    &:hover {
-      background-color: #f39c12;
-    }
-  }
 `;
 
-const FormContainer = styled.div`
-  margin-bottom: 20px;
-  background: rgba(0, 0, 0, 0.3);
-  padding: 15px;
-  border-radius: 8px;
-
-  form {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
-  }
-`;
-
-const FormGroup = styled.div`
-  label {
-    display: block;
-    color: #3498db;
-    margin-bottom: 6px;
-    font-size: 0.9rem;
-  }
-
-  input {
-    width: 100%;
-    padding: 8px;
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-    color: white;
-    font-size: 0.9rem;
-
-    &:focus {
-      outline: none;
-      border-color: #3498db;
-    }
-
-    &::placeholder {
-      color: rgba(255, 255, 255, 0.5);
-    }
-  }
-`;
-
-const SubmitButton = styled(Button)`
-  background-color: #3498db;
-  color: white;
-  padding: 8px 16px;
-  grid-column: 1 / -1;
-  width: fit-content;
-  justify-self: end;
-
-  &:hover {
-    background-color: #2980b9;
-  }
-`;
-
-const ManageRecruiters = () => {
+const JobOffering = () => {
   const navigate = useNavigate();
-  const [recruiters, setRecruiters] = useState([
+  const [jobOfferings, setJobOfferings] = useState([
     { 
       id: 1, 
-      name: "John Doe", 
-      email: "john.doe@example.com",
-      department: "IT",
-      status: "active"
+      name: "Senior React Developer", 
+      description: "We are looking for an experienced React developer...",
+      salary: "$80,000 - $100,000"
     },
     { 
       id: 2, 
-      name: "Jane Smith", 
-      email: "jane.smith@example.com",
-      department: "HR",
-      status: "inactive"
+      name: "UI/UX Designer", 
+      description: "Creative UI/UX designer needed for our growing team...",
+      salary: "$70,000 - $90,000"
     },
   ]);
 
   const [formData, setFormData] = useState({
     name: "",
-    email: "",
-    department: "",
-    status: "active"
+    description: "",
+    salary: "",
   });
 
   const sidebarSections = [
@@ -249,53 +248,38 @@ const ManageRecruiters = () => {
     { id: "payroll", title: "Payroll", icon: "💰", path: "/PayrollManager" },
     { id: "attendance", title: "Attendance", icon: "⏰", path: "/AttendanceTracker" },
     { id: "manage", title: "Manage Employees", icon: "👥", path: "/Manage" },
+    { id: "jobOffering", title: "Job Offering", icon: "💼", path: "/JobOffering" },
   ];
 
   const handleSectionClick = (path) => {
     navigate(path);
   };
 
-  const handleInputChange = (e) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prevState => ({
-      ...prevState,
-      [name]: value
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!formData.name || !formData.email || !formData.department) {
+    if (!formData.name || !formData.description || !formData.salary) {
       alert("Please fill in all fields.");
       return;
     }
-    const newRecruiter = {
-      id: recruiters.length + 1,
-      ...formData,
-      status: "active"
+    
+    const newJobOffering = {
+      id: jobOfferings.length + 1,
+      ...formData
     };
-    setRecruiters([...recruiters, newRecruiter]);
-    setFormData({
-      name: "",
-      email: "",
-      department: "",
-      status: "active"
-    });
-  };
-
-  const handleStatusChange = (id) => {
-    setRecruiters(recruiters.map(recruiter => {
-      if (recruiter.id === id) {
-        const newStatus = recruiter.status === "active" ? "inactive" : "active";
-        return { ...recruiter, status: newStatus };
-      }
-      return recruiter;
-    }));
+    
+    setJobOfferings([...jobOfferings, newJobOffering]);
+    setFormData({ name: "", description: "", salary: "" });
+    alert("Job posted successfully!");
   };
 
   const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this recruiter?")) {
-      setRecruiters(recruiters.filter(recruiter => recruiter.id !== id));
+    if (window.confirm("Are you sure you want to delete this job offering?")) {
+      setJobOfferings(jobOfferings.filter(job => job.id !== id));
     }
   };
 
@@ -310,7 +294,7 @@ const ManageRecruiters = () => {
             {sidebarSections.map((section) => (
               <li
                 key={section.id}
-                className={section.id === 'recruitment' ? 'active' : ''}
+                className={section.id === 'jobOffering' ? 'active' : ''}
                 onClick={() => handleSectionClick(section.path)}
               >
                 <span>{section.icon}</span>
@@ -323,7 +307,7 @@ const ManageRecruiters = () => {
 
       <MainContainer>
         <Header>
-          <Title>Recruitment Management</Title>
+          <Title>Job Offerings Management</Title>
           <ManagerInfo>
             <div className="name">Manager Name</div>
             <div className="role">Manager</div>
@@ -332,19 +316,22 @@ const ManageRecruiters = () => {
 
         <StatsContainer>
           <StatCard>
-            <div className="stat-title">Total Recruiters</div>
-            <div className="stat-value">{recruiters.length}</div>
+            <div className="stat-title">Total Job Offerings</div>
+            <div className="stat-value">{jobOfferings.length}</div>
           </StatCard>
           <StatCard>
-            <div className="stat-title">Active Recruiters</div>
+            <div className="stat-title">Average Salary</div>
             <div className="stat-value">
-              {recruiters.filter(r => r.status === 'active').length}
+              ${jobOfferings.reduce((acc, job) => {
+                const salary = parseInt(job.salary.replace(/[^0-9]/g, ''));
+                return acc + salary;
+              }, 0) / (jobOfferings.length || 1)}
             </div>
           </StatCard>
           <StatCard>
             <div className="stat-title">Departments</div>
             <div className="stat-value">
-              {new Set(recruiters.map(r => r.department)).size}
+              {new Set(jobOfferings.map(job => job.name.split(' ')[0])).size}
             </div>
           </StatCard>
         </StatsContainer>
@@ -353,70 +340,60 @@ const ManageRecruiters = () => {
           <FormContainer>
             <form onSubmit={handleSubmit}>
               <FormGroup>
-                <label>Name</label>
+                <label>Job Title</label>
                 <input
                   type="text"
                   name="name"
                   value={formData.name}
-                  onChange={handleInputChange}
-                  placeholder="Enter recruiter name"
+                  onChange={handleChange}
+                  placeholder="Enter job title"
                   required
                 />
               </FormGroup>
               <FormGroup>
-                <label>Email</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  placeholder="Enter recruiter email"
-                  required
-                />
-              </FormGroup>
-              <FormGroup>
-                <label>Department</label>
+                <label>Salary</label>
                 <input
                   type="text"
-                  name="department"
-                  value={formData.department}
-                  onChange={handleInputChange}
-                  placeholder="Enter department"
+                  name="salary"
+                  value={formData.salary}
+                  onChange={handleChange}
+                  placeholder="Enter salary range"
                   required
                 />
               </FormGroup>
-              <SubmitButton type="submit">Add Recruiter</SubmitButton>
+              <FormGroup style={{ gridColumn: '1 / -1' }}>
+                <label>Job Description</label>
+                <textarea
+                  name="description"
+                  value={formData.description}
+                  onChange={handleChange}
+                  placeholder="Enter job description"
+                  required
+                />
+              </FormGroup>
+              <SubmitButton type="submit">Post Job</SubmitButton>
             </form>
           </FormContainer>
 
           <Table>
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Department</th>
-                <th>Status</th>
+                <th>Job Title</th>
+                <th>Description</th>
+                <th>Salary</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {recruiters.map(recruiter => (
-                <tr key={recruiter.id}>
-                  <td>{recruiter.name}</td>
-                  <td>{recruiter.email}</td>
-                  <td>{recruiter.department}</td>
+              {jobOfferings.map(job => (
+                <tr key={job.id}>
+                  <td>{job.name}</td>
+                  <td>{job.description.substring(0, 50)}...</td>
+                  <td>{job.salary}</td>
                   <td>
                     <ActionButton
-                      className={recruiter.status === 'active' ? 'approve' : 'reject'}
-                      onClick={() => handleStatusChange(recruiter.id)}
-                    >
-                      {recruiter.status}
-                    </ActionButton>
-                  </td>
-                  <td>
-                    <ActionButton
-                      className="reject"
-                      onClick={() => handleDelete(recruiter.id)}
+                      className="delete"
+                      onClick={() => handleDelete(job.id)}
                     >
                       Delete
                     </ActionButton>
@@ -431,4 +408,4 @@ const ManageRecruiters = () => {
   );
 };
 
-export default ManageRecruiters;
+export default JobOffering;

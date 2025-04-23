@@ -24,7 +24,7 @@ import LeaveRequests from "./components/LeaveRequests";
 import AddUserForm from "./components/AddUserForm"; 
 import ManagerDashboard from "./components/manager/ManagerDashboard";
 import Leave from "./components/manager/Leave";
-
+import JobOffering from "./components/manager/JobOffering";
 const ProtectedRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem('token');
 
@@ -71,11 +71,8 @@ function App() {
         <Route path="/performance-controller" element={<PerformanceController />} />
         <Route path="/leave-requests" element={<LeaveRequests />} />
         <Route path="/add-user" element={<AddUserForm />} />
-        <Route path="/leave" element={
-          <ProtectedRoute>
-            <Leave />
-          </ProtectedRoute>
-        } />
+        <Route path="/leave" element={<Leave />} />
+        <Route path="/job-offering" element={<JobOffering />} />
       </Routes>
     </Router>
   );
