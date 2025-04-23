@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../../styles/Leave.css";
+import "./Leave.css";
 
 const Leave = () => {
   const [leaveRequests, setLeaveRequests] = useState([

@@ -23,6 +23,7 @@ import { Navigate } from 'react-router-dom';
 import LeaveRequests from "./components/LeaveRequests";
 import AddUserForm from "./components/AddUserForm"; 
 import ManagerDashboard from "./components/manager/ManagerDashboard";
+import Leave from "./components/manager/Leave";
 
 const ProtectedRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem('token');
@@ -38,6 +39,7 @@ function App() {
   return (
     <Router>
       <Routes>
+        <Route path="/dash" element={<Dash />} />
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
@@ -50,8 +52,16 @@ function App() {
         {/* Routes */}
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/admin" element={<Admin />} />
-        <Route path="/ManagerDashboard" element={<ManagerDashboard />} />
-        <Route path="/employee" element={<EmployeeDashboard />} />
+        <Route path="/ManagerDashboard" element={
+          <ProtectedRoute>
+            <ManagerDashboard />
+          </ProtectedRoute>
+        } />
+        <Route path="/EmployeeDashboard" element={
+          <ProtectedRoute>
+            <EmployeeDashboard />
+          </ProtectedRoute>
+        } />
         <Route path="/hr" element={<DashboardHR />} />
         <Route path="/users" element={<Users />} />
         <Route path="/control-access" element={<ControlAccess />} />
@@ -61,6 +71,11 @@ function App() {
         <Route path="/performance-controller" element={<PerformanceController />} />
         <Route path="/leave-requests" element={<LeaveRequests />} />
         <Route path="/add-user" element={<AddUserForm />} />
+        <Route path="/leave" element={
+          <ProtectedRoute>
+            <Leave />
+          </ProtectedRoute>
+        } />
       </Routes>
     </Router>
   );
