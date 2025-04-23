@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled, { createGlobalStyle, keyframes } from 'styled-components';
 import { FaApple, FaGoogle } from 'react-icons/fa';
 import { useNavigate } from "react-router-dom";
@@ -96,6 +96,13 @@ const StyledWrapper = styled.div`
     box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
   }
 
+  .form-btn:disabled {
+    background: #a0c4e0;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
   .sign-up-label {
     font-size: 14px;
     color: #2d3748;
@@ -160,6 +167,14 @@ const StyledWrapper = styled.div`
     border-color: #dadce0;
     box-shadow: 0 1px 3px rgba(60,64,67,0.3);
   }
+
+  .error-message {
+    color: #e74c3c;
+    font-size: 14px;
+    margin-top: -5px;
+    text-align: left;
+    padding-left: 5px;
+  }
 `;
 
 const SignupStyledWrapper = styled(StyledWrapper)`
@@ -180,17 +195,136 @@ const SignupStyledWrapper = styled(StyledWrapper)`
 const Signup = () => {
   const navigate = useNavigate();
   
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: ''
+  });
+
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    
+    // Clear error for this field when user starts typing
+    if (errors[name]) {
+      setErrors({ ...errors, [name]: '' });
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    
+    if (!formData.name.trim()) {
+      newErrors.name = 'Name is required';
+    }
+    
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Email is invalid';
+    }
+    
+    if (!formData.password) {
+      newErrors.password = 'Password is required';
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
+    
+    setLoading(true);
+    
+    try {
+      const response = await fetch('http://localhost:5001/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData),
+        credentials: 'include'
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.message || 'Registration failed');
+      }
+      
+      // Save token to localStorage
+      localStorage.setItem('token', data.token);
+      
+      // Show success message
+      alert('Registration successful!');
+      
+      // Redirect to dashboard or login page
+      navigate('/EmployeeDashboard');
+      
+    } catch (error) {
+      console.error('Registration error:', error);
+      setErrors({ submit: error.message });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       <GlobalStyle />
       <SignupStyledWrapper>
         <div className="form-container">
           <p className="title">Sign up</p>
-          <form className="form">
-            <input type="text" className="input" placeholder="Name" />
-            <input type="email" className="input" placeholder="Email" />
-            <input type="password" className="input" placeholder="Password" />
-            <button className="form-btn">Create account</button>
+          <form className="form" onSubmit={handleSubmit}>
+            <input 
+              type="text" 
+              name="name"
+              className="input" 
+              placeholder="Name" 
+              value={formData.name}
+              onChange={handleChange}
+            />
+            {errors.name && <p className="error-message">{errors.name}</p>}
+            
+            <input 
+              type="email" 
+              name="email"
+              className="input" 
+              placeholder="Email" 
+              value={formData.email}
+              onChange={handleChange}
+            />
+            {errors.email && <p className="error-message">{errors.email}</p>}
+            
+            <input 
+              type="password" 
+              name="password"
+              className="input" 
+              placeholder="Password" 
+              value={formData.password}
+              onChange={handleChange}
+            />
+            {errors.password && <p className="error-message">{errors.password}</p>}
+            
+            {errors.submit && <p className="error-message">{errors.submit}</p>}
+            
+            <button 
+              type="submit" 
+              className="form-btn" 
+              disabled={loading}
+            >
+              {loading ? 'Creating account...' : 'Create account'}
+            </button>
           </form>
 
           <div className="buttons-container">

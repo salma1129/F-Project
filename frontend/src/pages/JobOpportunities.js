@@ -6,12 +6,18 @@ import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
 
 const jobs = [
-  { title: "Software Developer", description: "Designs and develops software applications using programming languages like Java, Python, and C++." },
-  { title: "Web Developer", description: "Builds and maintains websites using front-end and back-end technologies such as HTML, CSS, JavaScript, and Node.js." },
-  { title: "Database Administrator (DBA)", description: "Manages and optimizes databases for performance, security, and data integrity." },
-  { title: "Network Engineer", description: "Designs and maintains network infrastructures, ensuring security and performance." },
-  { title: "Cybersecurity Analyst", description: "Protects systems and networks from cyber threats through monitoring and security measures." },
-  { title: "Data Analyst", description: "Analyzes large datasets to provide insights and support data-driven decision-making." },
+  { 
+    title: "Network Engineer / Software Developer", 
+    description: "Designs and maintains network infrastructures while also developing software applications using languages like Java, Python, and C++."
+  },
+  { 
+    title: "Cybersecurity Analyst / Web Developer", 
+    description: "Protects systems from cyber threats while building and maintaining websites using front-end and back-end technologies such as HTML, CSS, JavaScript, and Node.js."
+  },
+  { 
+    title: "Data Analyst / Database Administrator", 
+    description: "Analyzes large datasets to provide insights and manages and optimizes databases for performance, security, and data integrity."
+  },
   { title: "Cloud Engineer", description: "Manages cloud-based infrastructures on platforms like AWS, Azure, and Google Cloud." },
   { title: "IT Support Specialist", description: "Provides technical support and troubleshooting for IT systems." },
   { title: "AI/ML Engineer", description: "Develops artificial intelligence and machine learning models to automate tasks and analyze data." },
@@ -34,40 +40,74 @@ const JobOpportunities = () => {
     <div className="home-page-container">
       <Navbar />
       
-      <div className="home-container full-page">
-        <div className="home-content" style={{ paddingTop: "100px" }}>
+      <div className="home-container full-page" style={{ minHeight: "100vh", overflowY: "auto" }}>
+        <div className="home-content" style={{ paddingTop: "280px", paddingBottom: "60px" }}>
           <h1>IT Job Opportunities</h1>
           <p>Unlock your future with exciting job opportunities that match your skills and passion!</p>
           
-          <div className="job-grid" style={{ justifyContent: "center", margin: "0 auto", maxWidth: "1200px", display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "20px" }}>
+          <div style={{ 
+            width: "100%", 
+            maxWidth: "1200px", 
+            margin: "40px auto", 
+            display: "grid", 
+            gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", 
+            gap: "25px", 
+            justifyContent: "center",
+            alignItems: "stretch"
+          }}>
             {jobs.map((job, index) => (
-              <Card key={index} className="feature-card job-card" style={{ display: "flex", flexDirection: "column", height: "100%", margin: "10px", textAlign: "center" }}>
-                <CardContent className="job-content" style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%", padding: "20px" }}>
+              <Card key={index} className="feature-card job-card" style={{ 
+                display: "flex", 
+                flexDirection: "column", 
+                height: "100%", 
+                margin: "0", 
+                textAlign: "center",
+                boxShadow: "0 6px 10px rgba(6, 6, 6, 0.1)",
+                borderRadius: "10px",
+                overflow: "hidden",
+                backgroundColor: "#2d3748"
+              }}>
+                <CardContent className="job-content" style={{ 
+                  display: "flex", 
+                  flexDirection: "column", 
+                  justifyContent: "space-between", 
+                  height: "100%", 
+                  padding: "25px",
+                  backgroundColor: "#2d3748"
+                }}>
                   <div>
-                    <h3 className="job-card-title">{job.title}</h3>
-                    <p className="job-card-description">{job.description}</p>
+                    <h3 className="job-card-title" style={{ color: "white" }}>{job.title}</h3>
+                    <p className="job-card-description" style={{ color: "#cbd5e0" }}>{job.description}</p>
                   </div>
                   <div>
-                    <label className="checkbox-label" style={{ margin: "15px 0", color: "white" }}>
+                    <label className="checkbox-label" style={{ margin: "20px 0", color: "white", display: "block" }}>
                       <input
                         type="checkbox"
                         checked={selectedJobs.includes(job.title)}
                         onChange={() => handleCheckboxChange(job.title)}
+                        style={{ marginRight: "10px" }}
                       />
                       Select this job
                     </label>
                     <button 
                       className="btn" 
                       style={{ 
-                        backgroundColor: "#2c3e50", 
+                        display: "inline-flex",
+                        justifyContent:"center",
+                        backgroundColor: "#3182ce", 
                         color: "white", 
-                        padding: "8px 16px", 
+                        padding: "12px 50px", 
                         borderRadius: "5px",
-                        border: "none",
+                        border: "2px solid #3182ce",
+                        fontWeight: "700",
+                        fontSize: "20px",
+                        lineHeight: "1.2",
                         cursor: "pointer",
-                        transition: "all 0.3s ease-in-out"
+                        transition: "background-color 0.3s ease-in-out"
                       }} 
                       onClick={() => navigate("/Apply")}
+                      onMouseOver={(e) => e.target.style.backgroundColor = "#2b6cb0"}
+                      onMouseOut={(e) => e.target.style.backgroundColor = "#3182ce"}
                     >
                       Apply
                     </button>
@@ -77,7 +117,7 @@ const JobOpportunities = () => {
             ))}
           </div>
           
-          <div className="home-buttons" style={{ marginTop: "30px", marginBottom: "30px" }}>
+          <div className="home-buttons" style={{ marginTop: "40px", marginBottom: "40px" }}>
             <button className="btn btn-primary" onClick={() => navigate("/")}>
               Back to Home
             </button>
@@ -88,4 +128,4 @@ const JobOpportunities = () => {
   );
 };
 
-export default JobOpportunities; 
+export default JobOpportunities;
