@@ -1,23 +1,16 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import '../../styles/ManagerDashboard.css';
 import AttendanceTracker from './AttendanceTracker';
+import PayrollManager from './PayrollManager';
+import ManageRecruiters from './ManageRecruiters';
+import Leave from './Leave';
 
 const ManagerDashboard = () => {
-  const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState('dashboard');
   const [leaveRequests, setLeaveRequests] = useState([
     { id: 1, name: "Roua Ladhari", email: "roua.ladhari@horizon-tech.tn", type: "Sick Leave", duration: "2 days", status: "Pending" },
     { id: 2, name: "Salma BenKhamsa", email: "salma.benkhamsa@horizon-tech.tn", type: "Annual Leave", duration: "5 days", status: "Pending" },
   ]);
-
-  const handleSectionClick = (section) => {
-    if (section === 'attendance') {
-      navigate('/AttendanceTracker');
-    } else {
-      setActiveSection(section);
-    }
-  };
 
   const handleLeaveAction = (id, action) => {
     setLeaveRequests(prevRequests => 
@@ -36,7 +29,7 @@ const ManagerDashboard = () => {
     {
       title: "Leave Management",
       icon: "📅",
-      id: "leaveRequests"
+      id: "leave"
     },
     {
       title: "Recruitment",
@@ -55,29 +48,10 @@ const ManagerDashboard = () => {
     }
   ];
 
-  return (
-    <div className="manager-dashboard">
-      <div className="sidebar">
-        <div className="sidebar-header">
-          <h2>Manager Portal</h2>
-        </div>
-        <nav className="sidebar-nav">
-          <ul>
-            {sidebarSections.map(section => (
-              <li 
-                key={section.id}
-                className={activeSection === section.id ? 'active' : ''}
-                onClick={() => handleSectionClick(section.id)}
-              >
-                <span style={{ marginRight: '10px' }}>{section.icon}</span>
-                {section.title}
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </div>
-      <div className="main-content">
-        {activeSection === 'dashboard' ? (
+  const renderContent = () => {
+    switch (activeSection) {
+      case 'dashboard':
+        return (
           <>
             <div className="dashboard-header">
               <h1>Manager Dashboard</h1>
@@ -143,57 +117,43 @@ const ManagerDashboard = () => {
               </div>
             </div>
           </>
-        ) : activeSection === 'leaveRequests' ? (
-          <div className="section-content">
-            <h2>Leave Requests Management</h2>
-            <div className="leave-requests-container">
-              <table className="leave-table">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Type</th>
-                    <th>Duration</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {leaveRequests.map(request => (
-                    <tr key={request.id}>
-                      <td>{request.name}</td>
-                      <td>{request.email}</td>
-                      <td>{request.type}</td>
-                      <td>{request.duration}</td>
-                      <td className={`status ${request.status.toLowerCase()}`}>{request.status}</td>
-                      <td>
-                        <button 
-                          className="action-btn approve"
-                          onClick={() => handleLeaveAction(request.id, 'Approved')}
-                        >
-                          Approve
-                        </button>
-                        <button 
-                          className="action-btn reject"
-                          onClick={() => handleLeaveAction(request.id, 'Rejected')}
-                        >
-                          Reject
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        ) : activeSection === 'attendance' ? (
-          <AttendanceTracker />
-        ) : (
-          <div className="section-content">
-            <h2>{sidebarSections.find(s => s.id === activeSection)?.title}</h2>
-            <p>This section is under development.</p>
-          </div>
-        )}
+        );
+      case 'leave':
+        return <Leave />;
+      case 'recruiters':
+        return <ManageRecruiters />;
+      case 'payroll':
+        return <PayrollManager />;
+      case 'attendance':
+        return <AttendanceTracker />;
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div className="manager-dashboard">
+      <div className="sidebar">
+        <div className="sidebar-header">
+          <h2>Manager Portal</h2>
+        </div>
+        <nav className="sidebar-nav">
+          <ul>
+            {sidebarSections.map(section => (
+              <li 
+                key={section.id}
+                className={activeSection === section.id ? 'active' : ''}
+                onClick={() => setActiveSection(section.id)}
+              >
+                <span style={{ marginRight: '10px' }}>{section.icon}</span>
+                {section.title}
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+      <div className="main-content">
+        {renderContent()}
       </div>
     </div>
   );
