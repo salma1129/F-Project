@@ -6,7 +6,7 @@
   margin: 0;
   padding: 0;
 }
-
+ 
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: #f1f5f9;
@@ -93,8 +93,8 @@ body {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   will-change: transform, box-shadow;
   cursor: pointer;
+  overflow: hidden;
 }
-
 
 .job-card:hover {
   transform: translateY(-10px);
@@ -632,4 +632,3 @@ html, body {
   font-size: 0.9rem;
   margin-top: 5px;
 }
-
