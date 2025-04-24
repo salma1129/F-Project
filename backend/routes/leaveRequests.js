@@ -17,8 +17,12 @@ router.get("/", auth, async (req, res) => {
 // POST create a new leave request
 router.post("/", auth, async (req, res) => {
   try {
+    if (req.user.role !== "employee") {
+      return res.status(403).json({ message: "Access denied. Employees only." });
+    }
+
     const { name, email, startDate, endDate, reason } = req.body;
-    
+
     const newLeaveRequest = new LeaveRequest({
       name,
       email,
@@ -26,7 +30,7 @@ router.post("/", auth, async (req, res) => {
       endDate,
       reason,
       status: "Pending",
-      userId: req.user.id // from auth middleware
+      userId: req.user.id
     });
 
     const savedRequest = await newLeaveRequest.save();
@@ -36,6 +40,7 @@ router.post("/", auth, async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
 
 // UPDATE status of a leave request
 router.put("/:id/status", auth, async (req, res) => {
