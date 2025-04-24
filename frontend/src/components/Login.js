@@ -199,7 +199,34 @@ try {
 
   if (res.ok) {
     localStorage.setItem("token", data.token);
-    navigate("/EmployeeDashboard"); // Redirect to dashboard after successful login
+    
+    // Store user data
+    localStorage.setItem("userRole", data.user.role);
+    localStorage.setItem("userName", data.user.name);
+    localStorage.setItem("userEmail", data.user.email);
+    localStorage.setItem("userId", data.user.id);
+    
+    // Role-based redirection
+    const userRole = data.user.role;
+    switch(userRole) {
+      case 'admin':
+        navigate("/admin-dashboard");
+        break;
+      case 'hr':
+        navigate("/hr-dashboard");
+        break;
+      case 'manager':
+        navigate("/manager-dashboard");
+        break;
+      case 'employee':
+        navigate("/EmployeeDashboard");
+        break;
+      case 'candidate':
+        navigate("/job-opportunities");
+        break;
+      default:
+        navigate("/"); // Default to home page if role is unknown
+    }
   } else {
     alert(data.message);
   }

@@ -17,17 +17,17 @@ router.get("/", auth, roleCheck(['admin', 'hr']), async (req, res) => {
 // Create New User (CREATE) - Admin/HR access only
 router.post("/create", auth, roleCheck(['admin', 'hr']), async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
 
     // Check if user exists
     let user = await User.findOne({ email });
     if (user) return res.status(400).json({ message: "User already exists" });
 
     // Create new user
-    X = new User({ name, email, password });
-    await X.save();
+    user = new User({ name, email, password, role });
+    await user.save();
 
-    res.status(201).json(X);
+    res.status(201).json(user);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -36,10 +36,10 @@ router.post("/create", auth, roleCheck(['admin', 'hr']), async (req, res) => {
 // Update User (UPDATE) - Admin/HR access only
 router.put("/:id", auth, roleCheck(['admin', 'hr']), async (req, res) => {
   try {
-    const { name, email } = req.body;
+    const { name, email, role } = req.body;
     const updatedUser = await User.findByIdAndUpdate(
       req.params.id,
-      { name, email },
+      { name, email, role },
       { new: true }
     );
     res.status(200).json(updatedUser);

@@ -25,11 +25,31 @@ import AddUserForm from "./components/AddUserForm";
 import ManagerDashboard from "./components/manager/ManagerDashboard";
 import Leave from "./components/manager/Leave";
 import JobOffering from "./components/manager/JobOffering";
+import AdminDashboard from "./pages/AdminDashboard";
+
 const ProtectedRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem('token');
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
+  }
+
+  return children;
+};
+
+// Admin Route - Check if user is an admin
+const AdminRoute = ({ children }) => {
+  const isAuthenticated = localStorage.getItem('token');
+  // In a real app, you would decode the JWT to check the role
+  // For simplicity, this is just a basic check
+  const userRole = localStorage.getItem('userRole'); // You'd need to store this during login
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (userRole !== 'admin') {
+    return <Navigate to="/" replace />;
   }
 
   return children;
@@ -59,7 +79,20 @@ function App() {
         {/* Routes */}
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/admin" element={<Admin />} />
+        
+        {/* New Admin Dashboard Route */}
+        <Route path="/admin-dashboard" element={
+          <AdminRoute>
+            <AdminDashboard />
+          </AdminRoute>
+        } />
+        
         <Route path="/ManagerDashboard" element={
+          <ProtectedRoute>
+            <ManagerDashboard />
+          </ProtectedRoute>
+        } />
+        <Route path="/manager-dashboard" element={
           <ProtectedRoute>
             <ManagerDashboard />
           </ProtectedRoute>
@@ -70,6 +103,11 @@ function App() {
           </ProtectedRoute>
         } />
         <Route path="/hr" element={<DashboardHR />} />
+        <Route path="/hr-dashboard" element={
+          <ProtectedRoute>
+            <DashboardHR />
+          </ProtectedRoute>
+        } />
         <Route path="/users" element={<Users />} />
         <Route path="/control-access" element={<ControlAccess />} />
         <Route path="/department-manage" element={<DepartmentManage />} />
