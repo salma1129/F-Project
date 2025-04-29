@@ -1,5 +1,5 @@
 .manager-container {
-  background-image: url('../../public/images/background.jpg');
+  /* background-image removed to prevent clash */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -199,4 +199,4 @@ tr:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
   opacity: 0.9;
-} 
+}

@@ -40,6 +40,16 @@ const MainContainer = styled.div`
   z-index: 2;
 `;
 
+const Content = styled.div`
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 20px;
+  padding: 40px;
+  width: 100%;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+`;
+
 const Header = styled.div`
   display: flex;
   justify-content: space-between;
@@ -52,21 +62,23 @@ const Header = styled.div`
 
 const Title = styled.h1`
   color: white;
-  font-size: 1.6rem;
   margin: 0;
+  font-size: 2rem;
 `;
 
-const ManagerInfo = styled.div`
-  color: #3498db;
-  text-align: right;
+const UserInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 
-  .name {
-    font-size: 1rem;
-    margin-bottom: 3px;
+  .user-name {
+    font-weight: bold;
+    color: white;
+    font-size: 1.2rem;
   }
 
-  .role {
-    color: #95a5a6;
+  .user-role {
+    color: #e0e0e0;
     font-size: 0.9rem;
   }
 `;
@@ -241,20 +253,6 @@ const JobOffering = () => {
     salary: "",
   });
 
-  const sidebarSections = [
-    { id: "dashboard", title: "Dashboard", icon: "📊", path: "/ManagerDashboard" },
-    { id: "leave", title: "Leave Management", icon: "📅", path: "/Leave" },
-    { id: "recruitment", title: "Recruitment", icon: "👥", path: "/ManageRecruiters" },
-    { id: "payroll", title: "Payroll", icon: "💰", path: "/PayrollManager" },
-    { id: "attendance", title: "Attendance", icon: "⏰", path: "/AttendanceTracker" },
-    { id: "manage", title: "Manage Employees", icon: "👥", path: "/Manage" },
-    { id: "jobOffering", title: "Job Offering", icon: "💼", path: "/JobOffering" },
-  ];
-
-  const handleSectionClick = (path) => {
-    navigate(path);
-  };
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -285,127 +283,109 @@ const JobOffering = () => {
 
   return (
     <Container>
-      <div className="sidebar">
-        <div className="sidebar-header">
-          <h2>Manager Portal</h2>
-        </div>
-        <nav className="sidebar-nav">
-          <ul>
-            {sidebarSections.map((section) => (
-              <li
-                key={section.id}
-                className={section.id === 'jobOffering' ? 'active' : ''}
-                onClick={() => handleSectionClick(section.path)}
-              >
-                <span>{section.icon}</span>
-                {section.title}
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </div>
-
       <MainContainer>
-        <Header>
-          <Title>Job Offerings Management</Title>
-          <ManagerInfo>
-            <div className="name">Manager Name</div>
-            <div className="role">Manager</div>
-          </ManagerInfo>
-        </Header>
+        <Content>
+          <Header>
+            <Title>Job Offering</Title>
+            <UserInfo>
+              <div className="user-name">Manager Name</div>
+              <div className="user-role">Manager</div>
+            </UserInfo>
+          </Header>
 
-        <StatsContainer>
-          <StatCard>
-            <div className="stat-title">Total Job Offerings</div>
-            <div className="stat-value">{jobOfferings.length}</div>
-          </StatCard>
-          <StatCard>
-            <div className="stat-title">Average Salary</div>
-            <div className="stat-value">
-              ${jobOfferings.reduce((acc, job) => {
-                const salary = parseInt(job.salary.replace(/[^0-9]/g, ''));
-                return acc + salary;
-              }, 0) / (jobOfferings.length || 1)}
-            </div>
-          </StatCard>
-          <StatCard>
-            <div className="stat-title">Departments</div>
-            <div className="stat-value">
-              {new Set(jobOfferings.map(job => job.name.split(' ')[0])).size}
-            </div>
-          </StatCard>
-        </StatsContainer>
+          <StatsContainer>
+            <StatCard>
+              <div className="stat-title">Total Job Offerings</div>
+              <div className="stat-value">{jobOfferings.length}</div>
+            </StatCard>
+            <StatCard>
+              <div className="stat-title">Average Salary</div>
+              <div className="stat-value">
+                ${jobOfferings.reduce((acc, job) => {
+                  const salary = parseInt(job.salary.replace(/[^0-9]/g, ''));
+                  return acc + salary;
+                }, 0) / (jobOfferings.length || 1)}
+              </div>
+            </StatCard>
+            <StatCard>
+              <div className="stat-title">Departments</div>
+              <div className="stat-value">
+                {new Set(jobOfferings.map(job => job.name.split(' ')[0])).size}
+              </div>
+            </StatCard>
+          </StatsContainer>
 
-        <ContentCard>
-          <FormContainer>
-            <form onSubmit={handleSubmit}>
-              <FormGroup>
-                <label>Job Title</label>
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  placeholder="Enter job title"
-                  required
-                />
-              </FormGroup>
-              <FormGroup>
-                <label>Salary</label>
-                <input
-                  type="text"
-                  name="salary"
-                  value={formData.salary}
-                  onChange={handleChange}
-                  placeholder="Enter salary range"
-                  required
-                />
-              </FormGroup>
-              <FormGroup style={{ gridColumn: '1 / -1' }}>
-                <label>Job Description</label>
-                <textarea
-                  name="description"
-                  value={formData.description}
-                  onChange={handleChange}
-                  placeholder="Enter job description"
-                  required
-                />
-              </FormGroup>
-              <SubmitButton type="submit">Post Job</SubmitButton>
-            </form>
-          </FormContainer>
+          <ContentCard>
+            <FormContainer>
+              <form onSubmit={handleSubmit}>
+                <FormGroup>
+                  <label>Job Title</label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    placeholder="Enter job title"
+                    required
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <label>Salary</label>
+                  <input
+                    type="text"
+                    name="salary"
+                    value={formData.salary}
+                    onChange={handleChange}
+                    placeholder="Enter salary range"
+                    required
+                  />
+                </FormGroup>
+                <FormGroup style={{ gridColumn: '1 / -1' }}>
+                  <label>Job Description</label>
+                  <textarea
+                    name="description"
+                    value={formData.description}
+                    onChange={handleChange}
+                    placeholder="Enter job description"
+                    required
+                  />
+                </FormGroup>
+                <SubmitButton type="submit">Post Job</SubmitButton>
+              </form>
+            </FormContainer>
 
-          <Table>
-            <thead>
-              <tr>
-                <th>Job Title</th>
-                <th>Description</th>
-                <th>Salary</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {jobOfferings.map(job => (
-                <tr key={job.id}>
-                  <td>{job.name}</td>
-                  <td>{job.description.substring(0, 50)}...</td>
-                  <td>{job.salary}</td>
-                  <td>
-                    <ActionButton
-                      className="delete"
-                      onClick={() => handleDelete(job.id)}
-                    >
-                      Delete
-                    </ActionButton>
-                  </td>
+            <Table>
+              <thead>
+                <tr>
+                  <th>Job Title</th>
+                  <th>Description</th>
+                  <th>Salary</th>
+                  <th>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </Table>
-        </ContentCard>
+              </thead>
+              <tbody>
+                {jobOfferings.map(job => (
+                  <tr key={job.id}>
+                    <td>{job.name}</td>
+                    <td>{job.description.substring(0, 50)}...</td>
+                    <td>{job.salary}</td>
+                    <td>
+                      <ActionButton
+                        className="delete"
+                        onClick={() => handleDelete(job.id)}
+                      >
+                        Delete
+                      </ActionButton>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </ContentCard>
+        </Content>
       </MainContainer>
     </Container>
   );
 };
 
-export default JobOffering;
+export default JobOffering;

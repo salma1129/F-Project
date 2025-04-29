@@ -1,0 +1,155 @@
+/* Notification styling */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 400px;
+    z-index: 1100;
+    animation: slideIn 0.3s ease-out forwards;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  }
+  
+  .notification.success {
+    background-color: rgba(46, 204, 113, 0.9);
+    color: white;
+    border-left: 5px solid #27ae60;
+  }
+  
+  .notification.error {
+    background-color: rgba(231, 76, 60, 0.9);
+    color: white;
+    border-left: 5px solid #c0392b;
+  }
+  
+  .notification-message {
+    margin-right: 15px;
+    font-size: 0.95rem;
+  }
+  
+  .close-notification {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+  }
+  
+  .close-notification:hover {
+    opacity: 1;
+  }
+  
+  @keyframes slideIn {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  
+  /* Form info text */
+  .form-info {
+    color: #a0aec0;
+    font-size: 0.85rem;
+    margin-top: 10px;
+    font-style: italic;
+    text-align: center;
+  }
+  
+  /* Leave History Table Container */
+  .recent-requests {
+    background-color: #2d3748;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    margin: 20px 0;
+    overflow-x: auto;
+  }
+  
+  .recent-requests h3 {
+    color: #edf2f7;
+    font-size: 1.2rem;
+    margin-bottom: 12px;
+  }
+  
+  /* Table Styling */
+  .recent-requests table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #e2e8f0;
+    min-width: 700px;
+  }
+  
+  .recent-requests th,
+  .recent-requests td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid #4a5568;
+    white-space: nowrap;
+  }
+  
+  .recent-requests th {
+    background-color: #1a202c;
+    color: #cbd5e0;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  
+  .recent-requests td:nth-child(5) {
+    white-space: normal;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  /* Status Badge */
+  .status {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    min-width: 80px;
+    text-align: center;
+  }
+  
+  .status.approved {
+    background-color: #2f855a;
+    color: #f0fff4;
+  }
+  
+  .status.pending {
+    background-color: #d69e2e;
+    color: #fffaf0;
+  }
+  
+  /* Action Taken */
+  .action-taken {
+    font-style: italic;
+    color: #a0aec0;
+    font-size: 0.9rem;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 1024px) {
+    .requests-table {
+      overflow-x: auto;
+    }
+  
+    .requests-table table {
+      min-width: 800px;
+    }
+  }
+  

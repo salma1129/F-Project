@@ -2,12 +2,20 @@
   position: relative;
   min-height: 100vh;
   width: 100%;
-  background-image: url('../../public/images/background.jpg');
+  background: url('/images/background.jpg') no-repeat center center fixed;
   background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
   padding: 2rem;
+  overflow: hidden;
 }
+
+.manager-dashboard {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  background: url('/images/background.jpg') no-repeat center center fixed;
+  background-size: cover;
+}
+
 
 .container-overlay {
   position: absolute;
@@ -28,8 +36,10 @@
   padding: 2rem;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  ;
 }
+
+/* ... your other CSS stays the same ... */
+
 
 .heading {
   color: #333;
@@ -122,4 +132,4 @@
 
 .delete-btn:hover {
   background-color: #f57c00;
-} 
+}

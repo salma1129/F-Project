@@ -1,35 +1,30 @@
 // middleware/auth.js
 const jwt = require('jsonwebtoken');
+const User = require('../models/User');
 
-const auth = (req, res, next) => {
+const auth = async (req, res, next) => {
   try {
-    // 1. Get token from header (check both x-auth-token and Authorization headers)
-    let token = req.header('x-auth-token');
+    const token = req.header('Authorization')?.replace('Bearer ', '');
     
-    // Also check Authorization header (with Bearer prefix)
-    if (!token && req.headers.authorization) {
-      // Format: "Bearer <token>"
-      const authHeader = req.headers.authorization;
-      if (authHeader.startsWith('Bearer ')) {
-        token = authHeader.substring(7);
-      }
-    }
-    
-    // 2. Verify token exists
     if (!token) {
-      return res.status(401).json({ msg: 'No token, authorization denied' });
+      return res.status(401).json({ message: 'No token, authorization denied' });
     }
 
-    // 3. Verify token validity
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     
-    // 4. Attach user to request object
-    req.user = decoded;
-    
+    // Find the user by ID
+    const user = await User.findById(decoded.id);
+    if (!user) {
+      return res.status(401).json({ message: 'Token is not valid' });
+    }
+
+    // Attach the user to the request
+    req.user = user;
+    req.token = token;
     next();
-  } catch (err) {
-    console.error('Auth middleware error:', err);
-    res.status(401).json({ msg: 'Token is not valid' });
+  } catch (error) {
+    console.error('Auth middleware error:', error);
+    res.status(401).json({ message: 'Token is not valid' });
   }
 };
 

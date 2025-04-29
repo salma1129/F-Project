@@ -38,6 +38,16 @@ const MainContainer = styled.div`
   z-index: 2;
 `;
 
+const Content = styled.div`
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 20px;
+  padding: 40px;
+  width: 100%;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+`;
+
 const Header = styled.div`
   display: flex;
   justify-content: space-between;
@@ -50,8 +60,25 @@ const Header = styled.div`
 
 const Title = styled.h1`
   color: white;
-  font-size: 1.6rem;
   margin: 0;
+  font-size: 2rem;
+`;
+
+const UserInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+
+  .user-name {
+    font-weight: bold;
+    color: white;
+    font-size: 1.2rem;
+  }
+
+  .user-role {
+    color: #e0e0e0;
+    font-size: 0.9rem;
+  }
 `;
 
 const ManagerInfo = styled.div`
@@ -242,19 +269,6 @@ const ManageRecruiters = () => {
     status: "active"
   });
 
-  const sidebarSections = [
-    { id: "dashboard", title: "Dashboard", icon: "📊", path: "/ManagerDashboard" },
-    { id: "leave", title: "Leave Management", icon: "📅", path: "/Leave" },
-    { id: "recruitment", title: "Recruitment", icon: "👥", path: "/ManageRecruiters" },
-    { id: "payroll", title: "Payroll", icon: "💰", path: "/PayrollManager" },
-    { id: "attendance", title: "Attendance", icon: "⏰", path: "/AttendanceTracker" },
-    { id: "manage", title: "Manage Employees", icon: "👥", path: "/Manage" },
-  ];
-
-  const handleSectionClick = (path) => {
-    navigate(path);
-  };
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prevState => ({
@@ -301,131 +315,112 @@ const ManageRecruiters = () => {
 
   return (
     <Container>
-      <div className="sidebar">
-        <div className="sidebar-header">
-          <h2>Manager Portal</h2>
-        </div>
-        <nav className="sidebar-nav">
-          <ul>
-            {sidebarSections.map((section) => (
-              <li
-                key={section.id}
-                className={section.id === 'recruitment' ? 'active' : ''}
-                onClick={() => handleSectionClick(section.path)}
-              >
-                <span>{section.icon}</span>
-                {section.title}
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </div>
-
       <MainContainer>
-        <Header>
-          <Title>Recruitment Management</Title>
-          <ManagerInfo>
-            <div className="name">Manager Name</div>
-            <div className="role">Manager</div>
-          </ManagerInfo>
-        </Header>
+        <Content>
+          <Header>
+            <Title>Manage Recruiters</Title>
+            <UserInfo>
+              <div className="user-name">Manager Name</div>
+              <div className="user-role">Manager</div>
+            </UserInfo>
+          </Header>
+          <StatsContainer>
+            <StatCard>
+              <div className="stat-title">Total Recruiters</div>
+              <div className="stat-value">{recruiters.length}</div>
+            </StatCard>
+            <StatCard>
+              <div className="stat-title">Active Recruiters</div>
+              <div className="stat-value">
+                {recruiters.filter(r => r.status === 'active').length}
+              </div>
+            </StatCard>
+            <StatCard>
+              <div className="stat-title">Departments</div>
+              <div className="stat-value">
+                {new Set(recruiters.map(r => r.department)).size}
+              </div>
+            </StatCard>
+          </StatsContainer>
 
-        <StatsContainer>
-          <StatCard>
-            <div className="stat-title">Total Recruiters</div>
-            <div className="stat-value">{recruiters.length}</div>
-          </StatCard>
-          <StatCard>
-            <div className="stat-title">Active Recruiters</div>
-            <div className="stat-value">
-              {recruiters.filter(r => r.status === 'active').length}
-            </div>
-          </StatCard>
-          <StatCard>
-            <div className="stat-title">Departments</div>
-            <div className="stat-value">
-              {new Set(recruiters.map(r => r.department)).size}
-            </div>
-          </StatCard>
-        </StatsContainer>
+          <ContentCard>
+            <FormContainer>
+              <form onSubmit={handleSubmit}>
+                <FormGroup>
+                  <label>Name</label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    placeholder="Enter recruiter name"
+                    required
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <label>Email</label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    placeholder="Enter recruiter email"
+                    required
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <label>Department</label>
+                  <input
+                    type="text"
+                    name="department"
+                    value={formData.department}
+                    onChange={handleInputChange}
+                    placeholder="Enter department"
+                    required
+                  />
+                </FormGroup>
+                <SubmitButton type="submit">Add Recruiter</SubmitButton>
+              </form>
+            </FormContainer>
 
-        <ContentCard>
-          <FormContainer>
-            <form onSubmit={handleSubmit}>
-              <FormGroup>
-                <label>Name</label>
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  placeholder="Enter recruiter name"
-                  required
-                />
-              </FormGroup>
-              <FormGroup>
-                <label>Email</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  placeholder="Enter recruiter email"
-                  required
-                />
-              </FormGroup>
-              <FormGroup>
-                <label>Department</label>
-                <input
-                  type="text"
-                  name="department"
-                  value={formData.department}
-                  onChange={handleInputChange}
-                  placeholder="Enter department"
-                  required
-                />
-              </FormGroup>
-              <SubmitButton type="submit">Add Recruiter</SubmitButton>
-            </form>
-          </FormContainer>
-
-          <Table>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Department</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {recruiters.map(recruiter => (
-                <tr key={recruiter.id}>
-                  <td>{recruiter.name}</td>
-                  <td>{recruiter.email}</td>
-                  <td>{recruiter.department}</td>
-                  <td>
-                    <ActionButton
-                      className={recruiter.status === 'active' ? 'approve' : 'reject'}
-                      onClick={() => handleStatusChange(recruiter.id)}
-                    >
-                      {recruiter.status}
-                    </ActionButton>
-                  </td>
-                  <td>
-                    <ActionButton
-                      className="reject"
-                      onClick={() => handleDelete(recruiter.id)}
-                    >
-                      Delete
-                    </ActionButton>
-                  </td>
+            <Table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Department</th>
+                  <th>Status</th>
+                  <th>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </Table>
-        </ContentCard>
+              </thead>
+              <tbody>
+                {recruiters.map(recruiter => (
+                  <tr key={recruiter.id}>
+                    <td>{recruiter.name}</td>
+                    <td>{recruiter.email}</td>
+                    <td>{recruiter.department}</td>
+                    <td>
+                      <ActionButton
+                        className={recruiter.status === 'active' ? 'approve' : 'reject'}
+                        onClick={() => handleStatusChange(recruiter.id)}
+                      >
+                        {recruiter.status}
+                      </ActionButton>
+                    </td>
+                    <td>
+                      <ActionButton
+                        className="reject"
+                        onClick={() => handleDelete(recruiter.id)}
+                      >
+                        Delete
+                      </ActionButton>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </ContentCard>
+        </Content>
       </MainContainer>
     </Container>
   );

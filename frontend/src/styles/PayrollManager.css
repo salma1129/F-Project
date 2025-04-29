@@ -4,27 +4,39 @@ body, html {
   padding: 0;
   height: 100%;
   width: 100%;
+  background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .payroll-page-container {
   min-height: 100vh;
   width: 100%;
-  background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
   display: flex;
+}
+
+.payroll-page-container::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 1;
+  pointer-events: none;
 }
 
 .sidebar {
   width: 280px;
-  background-color: rgba(31, 31, 31, 0.9);
+  background-color: rgba(0, 0, 0, 0.95);
   height: 100vh;
   padding: 20px 0;
   position: fixed;
   left: 0;
   top: 0;
-  z-index: 2;
+  z-index: 0.5;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
 }
 
@@ -38,7 +50,7 @@ body, html {
 .sidebar-header h2 {
   margin: 0;
   padding: 20px 0;
-  color: #3498db;
+  color: #ffffff;
   font-size: 1.8rem;
   font-weight: 600;
 }
@@ -60,13 +72,13 @@ body, html {
 }
 
 .sidebar-nav li:hover {
-  background-color: rgba(52, 152, 219, 0.2);
-  border-left: 4px solid #3498db;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-left: 4px solid #ffffff;
 }
 
 .sidebar-nav li.active {
-  background-color: rgba(52, 152, 219, 0.3);
-  border-left: 4px solid #3498db;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-left: 4px solid #ffffff;
 }
 
 .main-container {
@@ -91,6 +103,25 @@ body, html {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+  z-index: 1;
+  overflow: hidden;
+}
+
+.payroll-content::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.payroll-content > * {
+  position: relative;
+  z-index: 1;
 }
 
 .payroll-header {
@@ -169,7 +200,7 @@ table {
 
 th {
   background-color: rgba(0, 0, 0, 0.5);
-  color: #3498db;
+  color: #ffffff;
   font-weight: 600;
   text-align: left;
   padding: 12px;
@@ -203,7 +234,7 @@ td {
 }
 
 .stat-card h3 {
-  color: #3498db;
+  color: #ffffff;
   margin-bottom: 10px;
 }
 

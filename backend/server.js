@@ -25,8 +25,27 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Database connection
 mongoose
     .connect(process.env.MONGO_URI)
-    .then(() => console.log("MongoDB Connected"))
-    .catch((err) => console.error(err));
+    .then(() => {
+        console.log("MongoDB Connected Successfully");
+    })
+    .catch((err) => {
+        console.error("MongoDB Connection Error:", err);
+        console.error("MongoDB URI:", process.env.MONGO_URI);
+        process.exit(1); // Exit the process if MongoDB connection fails
+    });
+
+// Add connection event listeners
+mongoose.connection.on('connected', () => {
+    console.log('Mongoose connected to MongoDB');
+});
+
+mongoose.connection.on('error', (err) => {
+    console.error('Mongoose connection error:', err);
+});
+
+mongoose.connection.on('disconnected', () => {
+    console.log('Mongoose disconnected from MongoDB');
+});
 
 // Routes
 app.use("/api/auth", require("./routes/authRoutes"));

@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from 'styled-components';
+import axios from '../../config/axios';
+
 
 const Container = styled.div`
   min-height: 100vh;
@@ -9,12 +11,18 @@ const Container = styled.div`
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  background-attachment: fixed;
   display: flex;
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow-y: auto;
 
   &::before {
     content: '';
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
@@ -24,77 +32,12 @@ const Container = styled.div`
   }
 `;
 
-const Sidebar = styled.div`
-  width: 280px;
-  background-color: #1a2b4b;
-  height: 100vh;
-  padding: 20px 0;
-  position: fixed;
-  left: 0;
-  top: 0;
-  z-index: 2;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
-`;
-
-const SidebarHeader = styled.div`
-  padding: 0 20px;
-  margin-bottom: 40px;
-  text-align: center;
-
-  h2 {
-    margin: 0;
-    padding: 20px 0;
-    color: #3498db;
-    font-size: 2rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-`;
-
-const Nav = styled.nav`
-  ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  li {
-    padding: 15px 25px;
-    color: white;
-    cursor: pointer;
-    transition: all 0.3s;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 1.1rem;
-
-    &:hover {
-      background-color: rgba(52, 152, 219, 0.1);
-    }
-
-    &.active {
-      background-color: #2c5282;
-      color: #3498db;
-    }
-
-    span {
-      font-weight: 400;
-    }
-  }
-`;
-
 const MainContainer = styled.div`
   flex: 1;
-  margin-left: 90px;
-  margin-right: 90px;
-  padding: 40px;
+  margin-left: 280px;
+  padding: 25px;
   position: relative;
   z-index: 2;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center; /* Changed to center */
-  align-items: flex-start;
 `;
 
 const Content = styled.div`
@@ -102,22 +45,42 @@ const Content = styled.div`
   border-radius: 20px;
   padding: 40px;
   width: 100%;
-  max-width: 1200px;
   color: white;
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-  margin-left: 0; /* you can set this to 20px or so for fine alignment */
 `;
 
-
+const Header = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 15px;
+  border-radius: 8px;
+`;
 
 const Title = styled.h1`
-  text-align: center;
   color: white;
+  margin: 0;
   font-size: 2rem;
-  margin-bottom: 40px;
-  text-transform: uppercase;
-  letter-spacing: 2px;
+`;
+
+const UserInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+
+  .user-name {
+    font-weight: bold;
+    color: white;
+    font-size: 1.2rem;
+  }
+
+  .user-role {
+    color: #e0e0e0;
+    font-size: 0.9rem;
+  }
 `;
 
 const FormContainer = styled.div`
@@ -237,55 +200,128 @@ const DeleteButton = styled(ActionButton)`
 
 const Manage = () => {
   const navigate = useNavigate();
-  const [activeSection, setActiveSection] = useState("manage");
-  const [employees, setEmployees] = useState([
-    { id: 1, name: "Roua Ladhari", email: "roua.ladhari@horizon-tech.tn", position: "Manager" },
-    { id: 2, name: "Salma BenKhamsa", email: "salma.benkhamsa@horizon-tech.tn", position: "Developer" },
-  ]);
+  const [employees, setEmployees] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const [newEmployee, setNewEmployee] = useState({
-    name: "",
-    email: "",
+    firstName: "",
+    lastName: "",
+    department: "",
     position: "",
+    contact: {
+      email: "",
+      phone: ""
+    }
   });
 
   const [editingEmployee, setEditingEmployee] = useState(null);
 
-  const sidebarSections = [
-    { id: "dashboard", title: "Dashboard", icon: "📊", path: "/ManagerDashboard" },
-    { id: "leave", title: "Leave Management", icon: "📅", path: "/Leave" },
-    { id: "recruitment", title: "Recruitment", icon: "👥", path: "/ManageRecruiters" },
-    { id: "payroll", title: "Payroll", icon: "💰", path: "/PayrollManager" },
-    { id: "attendance", title: "Attendance", icon: "⏰", path: "/AttendanceTracker" },
-    { id: "manage", title: "Manage Employees", icon: "👥", path: "/Manage" },
-  ];
+  // Add debug logging
 
-  const handleSectionClick = (path) => {
-    navigate(path);
+useEffect(() => {
+  console.log('Current auth state:', {
+    token: localStorage.getItem('token'),
+    role: localStorage.getItem('userRole'),
+    userId: localStorage.getItem('userId')
+  });
+  fetchEmployees();
+}, []);
+
+  const fetchEmployees = async () => {
+    try {
+      console.log('Fetching employees with token:', localStorage.getItem('token'));
+      const token = localStorage.getItem("token"); // or from your auth context
+
+      const response = await axios.get('/api/employees', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      console.log('Employees data:', response.data);
+      setEmployees(response.data);
+    } catch (err) {
+      console.error('Full error details:', {
+        message: err.message,
+        status: err.response?.status,
+        data: err.response?.data,
+        headers: err.response?.headers
+      });
+      setError(err.response?.data?.message || 'Failed to fetch employees');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
     if (editingEmployee) {
-      setEditingEmployee({ ...editingEmployee, [e.target.name]: e.target.value });
+      if (name.startsWith('contact.')) {
+        const contactField = name.split('.')[1];
+        setEditingEmployee({
+          ...editingEmployee,
+          contact: {
+            ...editingEmployee.contact,
+            [contactField]: value
+          }
+        });
+      } else {
+        setEditingEmployee({ ...editingEmployee, [name]: value });
+      }
     } else {
-      setNewEmployee({ ...newEmployee, [e.target.name]: e.target.value });
+      if (name.startsWith('contact.')) {
+        const contactField = name.split('.')[1];
+        setNewEmployee({
+          ...newEmployee,
+          contact: {
+            ...newEmployee.contact,
+            [contactField]: value
+          }
+        });
+      } else {
+        setNewEmployee({ ...newEmployee, [name]: value });
+      }
     }
   };
 
-  const handleAddEmployee = (e) => {
+  const handleAddEmployee = async (e) => {
     e.preventDefault();
-    if (!newEmployee.name || !newEmployee.email || !newEmployee.position) {
-      alert("Please fill in all fields.");
+    if (!newEmployee.firstName || !newEmployee.lastName || !newEmployee.department || 
+        !newEmployee.position || !newEmployee.contact.email) {
+      alert("Please fill in all required fields.");
       return;
     }
-    const newEntry = { id: employees.length + 1, ...newEmployee };
-    setEmployees([...employees, newEntry]);
-    setNewEmployee({ name: "", email: "", position: "" });
+
+    try {
+      const response = await axios.post('/api/employees', newEmployee);
+      setEmployees([...employees, response.data]);
+      setNewEmployee({
+        firstName: "",
+        lastName: "",
+        department: "",
+        position: "",
+        contact: {
+          email: "",
+          phone: ""
+        }
+      });
+      alert('Employee added successfully');
+    } catch (err) {
+      console.error('Error adding employee:', err);
+      alert('Failed to add employee');
+    }
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this employee?")) {
-      setEmployees(employees.filter(emp => emp.id !== id));
+      try {
+        await axios.delete(`/api/employees/${id}`);
+        setEmployees(employees.filter(emp => emp._id !== id));
+        alert('Employee deleted successfully');
+      } catch (err) {
+        console.error('Error deleting employee:', err);
+        alert('Failed to delete employee');
+      }
     }
   };
 
@@ -293,68 +329,77 @@ const Manage = () => {
     setEditingEmployee(employee);
   };
 
-  const handleUpdate = (e) => {
+  const handleUpdate = async (e) => {
     e.preventDefault();
-    if (!editingEmployee.name || !editingEmployee.email || !editingEmployee.position) {
-      alert("Please fill in all fields.");
+    if (!editingEmployee.firstName || !editingEmployee.lastName || !editingEmployee.department || 
+        !editingEmployee.position || !editingEmployee.contact.email) {
+      alert("Please fill in all required fields.");
       return;
     }
-    setEmployees(employees.map(emp => 
-      emp.id === editingEmployee.id ? editingEmployee : emp
-    ));
-    setEditingEmployee(null);
+
+    try {
+      const response = await axios.put(`/api/employees/${editingEmployee._id}`, editingEmployee);
+      setEmployees(employees.map(emp => 
+        emp._id === editingEmployee._id ? response.data : emp
+      ));
+      setEditingEmployee(null);
+      alert('Employee updated successfully');
+    } catch (err) {
+      console.error('Error updating employee:', err);
+      alert('Failed to update employee');
+    }
   };
 
   const handleCancelEdit = () => {
     setEditingEmployee(null);
   };
 
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
   return (
     <Container>
-      <Sidebar>
-        <SidebarHeader>
-          <h2>Manager Portal</h2>
-        </SidebarHeader>
-        <Nav>
-          <ul>
-            {sidebarSections.map((section) => (
-              <li
-                key={section.id}
-                className={section.id === 'manage' ? 'active' : ''}
-                onClick={() => handleSectionClick(section.path)}
-              >
-                <span>{section.icon}</span>
-                {section.title}
-              </li>
-            ))}
-          </ul>
-        </Nav>
-      </Sidebar>
-
       <MainContainer>
         <Content>
-          <Title>{editingEmployee ? 'Edit Employee' : 'Manage Employees'}</Title>
+          <Header>
+            <Title>Manage Employees</Title>
+            <UserInfo>
+              <div className="user-name">Manager Name</div>
+              <div className="user-role">Manager</div>
+            </UserInfo>
+          </Header>
           
           <FormContainer>
             <form onSubmit={editingEmployee ? handleUpdate : handleAddEmployee}>
               <FormGroup>
-                <label>Employee Name</label>
+                <label>First Name</label>
                 <input
                   type="text"
-                  name="name"
-                  placeholder="Enter employee name"
-                  value={editingEmployee ? editingEmployee.name : newEmployee.name}
+                  name="firstName"
+                  placeholder="Enter first name"
+                  value={editingEmployee ? editingEmployee.firstName : newEmployee.firstName}
                   onChange={handleChange}
                   required
                 />
               </FormGroup>
               <FormGroup>
-                <label>Employee Email</label>
+                <label>Last Name</label>
                 <input
-                  type="email"
-                  name="email"
-                  placeholder="Enter employee email"
-                  value={editingEmployee ? editingEmployee.email : newEmployee.email}
+                  type="text"
+                  name="lastName"
+                  placeholder="Enter last name"
+                  value={editingEmployee ? editingEmployee.lastName : newEmployee.lastName}
+                  onChange={handleChange}
+                  required
+                />
+              </FormGroup>
+              <FormGroup>
+                <label>Department</label>
+                <input
+                  type="text"
+                  name="department"
+                  placeholder="Enter department"
+                  value={editingEmployee ? editingEmployee.department : newEmployee.department}
                   onChange={handleChange}
                   required
                 />
@@ -368,6 +413,27 @@ const Manage = () => {
                   value={editingEmployee ? editingEmployee.position : newEmployee.position}
                   onChange={handleChange}
                   required
+                />
+              </FormGroup>
+              <FormGroup>
+                <label>Email</label>
+                <input
+                  type="email"
+                  name="contact.email"
+                  placeholder="Enter email"
+                  value={editingEmployee ? editingEmployee.contact.email : newEmployee.contact.email}
+                  onChange={handleChange}
+                  required
+                />
+              </FormGroup>
+              <FormGroup>
+                <label>Phone</label>
+                <input
+                  type="tel"
+                  name="contact.phone"
+                  placeholder="Enter phone number"
+                  value={editingEmployee ? editingEmployee.contact.phone : newEmployee.contact.phone}
+                  onChange={handleChange}
                 />
               </FormGroup>
               <ButtonGroup>
@@ -386,29 +452,29 @@ const Manage = () => {
           <Table>
             <thead>
               <tr>
-                <th>ID</th>
                 <th>Name</th>
-                <th>Email</th>
+                <th>Department</th>
                 <th>Position</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Status</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {employees.map(employee => (
-                <tr key={employee.id}>
-                  <td>{employee.id}</td>
-                  <td>{employee.name}</td>
-                  <td>{employee.email}</td>
+                <tr key={employee._id}>
+                  <td>{`${employee.firstName} ${employee.lastName}`}</td>
+                  <td>{employee.department}</td>
                   <td>{employee.position}</td>
+                  <td>{employee.contact.email}</td>
+                  <td>{employee.contact.phone}</td>
+                  <td>{employee.status}</td>
                   <td>
-                    <EditButton
-                      onClick={() => handleEdit(employee)}
-                    >
+                    <EditButton onClick={() => handleEdit(employee)}>
                       Edit
                     </EditButton>
-                    <DeleteButton
-                      onClick={() => handleDelete(employee.id)}
-                    >
+                    <DeleteButton onClick={() => handleDelete(employee._id)}>
                       Delete
                     </DeleteButton>
                   </td>
@@ -422,4 +488,4 @@ const Manage = () => {
   );
 };
 
-export default Manage;
+export default Manage;
