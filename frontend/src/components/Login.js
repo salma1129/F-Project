@@ -16,7 +16,7 @@ const GlobalStyle = createGlobalStyle`
     align-items: center;
     height: 100vh;
   }
-  `;
+`;
 
 // Floating Animation
 const floatAnimation = keyframes`
@@ -25,14 +25,12 @@ const floatAnimation = keyframes`
   100% { transform: translateY(0px); }
 `;
 
-
 // Glow Animation
 const glow = keyframes`
   0% { box-shadow: 0 0 5px teal, 0 0 10px teal, 0 0 15px teal; }
   50% { box-shadow: 0 0 10px cyan, 0 0 20px cyan, 0 0 30px cyan; }
   100% { box-shadow: 0 0 5px teal, 0 0 10px teal, 0 0 15px teal; }
 `;
-
 
 // Styled Wrapper
 const StyledWrapper = styled.div`
@@ -187,63 +185,49 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-try {
-  const res = await fetch("http://localhost:5001/api/auth/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
-    credentials: "include",
-  });
+    try {
+      const res = await fetch("http://localhost:5001/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+        credentials: "include",
+      });
 
-  const data = await res.json();
+      const data = await res.json();
 
-  if (res.ok) {
-    localStorage.setItem("token", data.token);
-    
-    // Store user data
-    localStorage.setItem("userRole", data.user.role);
-    localStorage.setItem("userName", data.user.name);
-    localStorage.setItem("userEmail", data.user.email);
-    localStorage.setItem("userId", data.user.id);
-    
-    // Role-based redirection
-    const userRole = data.user.role;
-    switch(userRole) {
-      case 'admin':
-        navigate("/admin-dashboard");
-        break;
-      case 'hr':
-        navigate("/hr-dashboard");
-        break;
-      case 'manager':
-        navigate("/manager-dashboard");
-        break;
-      case 'employee':
-        navigate("/EmployeeDashboard");
-        break;
-      case 'candidate':
-        navigate("/job-opportunities");
-        break;
-      default:
-        navigate("/"); // Default to home page if role is unknown
+      if (res.ok) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("userRole", data.user.role);
+        localStorage.setItem("userName", data.user.name);
+        localStorage.setItem("userEmail", data.user.email);
+        localStorage.setItem("userId", data.user.id);
+
+        switch (data.user.role) {
+          case "admin":
+            navigate("/admin-dashboard");
+            break;
+          case "hr":
+            navigate("/hr-dashboard");
+            break;
+          case "manager":
+            navigate("/manager-dashboard");
+            break;
+          case "employee":
+            navigate("/EmployeeDashboard");
+            break;
+          case "candidate":
+            navigate("/job-opportunities");
+            break;
+          default:
+            navigate("/");
+        }
+      } else {
+        alert(data.message);
+      }
+    } catch (error) {
+      console.error("Error logging in:", error);
+      alert("An error occurred");
     }
-  } else {
-    alert(data.message);
-  }
-} catch (error) {
-  console.error("Error logging in:", error);
-  alert("An error occurred");
-}
-  };
-
-  // Navigate to Sign Up page
-  const handleSignUp = () => {
-    navigate("/Signup");
-  };
-
-  // Navigate to Forgot Password page
-  const handleForgotPassword = () => {
-    navigate("/forgetpassword");
   };
 
   return (
@@ -269,30 +253,30 @@ try {
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-            <p className="forgot-password" onClick={() => navigate("/forgetpassword")}>
+            <p className="forgot-password" onClick={() => navigate("/forgetpass")}>
               Forgot Password?
             </p>
             <button type="submit" className="form-btn">Login</button>
           </form>
 
-      <div className="buttons-container">
-        <button className="apple-login-button">
-          <FaApple size={20} /> Login with Apple
-        </button>
-        <button className="google-login-button">
-          <FaGoogle size={20} /> Login with Google
-        </button>
-      </div>
+          <div className="buttons-container">
+            <button className="apple-login-button">
+              <FaApple size={20} /> Login with Apple
+            </button>
+            <button className="google-login-button">
+              <FaGoogle size={20} /> Login with Google
+            </button>
+          </div>
 
-      <p className="sign-up-label">
-        Don't have an account?
-        <span className="sign-up-link" onClick={() => navigate("/Signup")}>
-          Sign up
-        </span>
-      </p>
-    </div>
-  </StyledWrapper>
-</>
+          <p className="sign-up-label">
+            Don't have an account?
+            <span className="sign-up-link" onClick={() => navigate("/Signup")}>
+              Sign up
+            </span>
+          </p>
+        </div>
+      </StyledWrapper>
+    </>
   );
 };
 

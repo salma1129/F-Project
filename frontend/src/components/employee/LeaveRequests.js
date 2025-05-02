@@ -6,10 +6,6 @@ const LeaveRequests = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    fetchLeaveRequests();
-  }, []);
-
   const fetchLeaveRequests = async () => {
     try {
       setLoading(true);
@@ -27,6 +23,7 @@ const LeaveRequests = () => {
 
       const data = await response.json();
       setLeaveRequests(data);
+      setError(null);
     } catch (error) {
       console.error("Error fetching leave requests:", error);
       setError("Failed to load leave requests. Please try again.");
@@ -34,6 +31,15 @@ const LeaveRequests = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchLeaveRequests();
+    // Set up automatic refresh every 30 seconds
+    const refreshInterval = setInterval(fetchLeaveRequests, 30000);
+    
+    // Cleanup interval on component unmount
+    return () => clearInterval(refreshInterval);
+  }, []);
 
   const handleStatusChange = async (id, status) => {
     try {

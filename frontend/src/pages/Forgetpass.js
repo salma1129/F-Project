@@ -19,39 +19,10 @@ const GlobalStyle = createGlobalStyle`
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: #f1f5f9;
+    background: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80') no-repeat center center fixed;
+    background-size: cover;
     position: relative;
     overflow: hidden;
-  }
-
-  body::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.2) 0%,
-      rgba(180, 212, 255, 0.1) 100%
-    );
-    pointer-events: none;
-  }
-
-  body::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(
-      circle at top right,
-      rgba(255, 255, 255, 0.3) 0%,
-      transparent 60%
-    );
-    pointer-events: none;
   }
 `;
 
@@ -118,6 +89,11 @@ const StyledWrapper = styled.div`
   .input:focus {
     border-color: #3498db;
     box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+  }
+
+  .input::placeholder {
+    color: #111;
+    opacity: 1;
   }
 
   .form-btn {

@@ -5,6 +5,39 @@ const router = express.Router();
 const auth = require("../Middleware/auth");
 const roleCheck = require("../Middleware/roleCheck");
 
+// Place personal info routes FIRST to avoid /:id overlap
+router.get("/me", auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('-password');
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(200).json(user);
+  } catch (err) {
+    console.error("Error fetching profile:", err);
+    res.status(500).json({ message: "Server error while fetching profile" });
+  }
+});
+
+router.put("/me/update", auth, async (req, res) => {
+  try {
+    const { name, email } = req.body;
+    // Validate input
+    if (!name || !email) {
+      return res.status(400).json({ message: "Name and email are required" });
+    }
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user.id,
+      { name, email },
+      { new: true }
+    ).select('-password');
+    res.status(200).json(updatedUser);
+  } catch (err) {
+    console.error("Error updating profile:", err);
+    res.status(500).json({ message: "Server error while updating profile" });
+  }
+});
+
 // Get All Users (READ) - Admin access only
 router.get("/", auth, roleCheck(['admin']), async (req, res) => {
   try {
@@ -174,44 +207,6 @@ router.delete("/:id", auth, roleCheck(['admin']), async (req, res) => {
   } catch (err) {
     console.error("Error deleting user:", err);
     res.status(500).json({ message: "Server error while deleting user" });
-  }
-});
-
-// Get current user profile (any authenticated user)
-router.get("/me", auth, async (req, res) => {
-  try {
-    const user = await User.findById(req.user.id).select('-password');
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    res.status(200).json(user);
-  } catch (err) {
-    console.error("Error fetching profile:", err);
-    res.status(500).json({ message: "Server error while fetching profile" });
-  }
-});
-
-// Update current user profile (any authenticated user)
-router.put("/me/update", auth, async (req, res) => {
-  try {
-    const { name, email } = req.body;
-    
-    // Validate input
-    if (!name || !email) {
-      return res.status(400).json({ message: "Name and email are required" });
-    }
-    
-    // Don't allow changing role via this endpoint
-    const updatedUser = await User.findByIdAndUpdate(
-      req.user.id,
-      { name, email },
-      { new: true }
-    ).select('-password');
-    
-    res.status(200).json(updatedUser);
-  } catch (err) {
-    console.error("Error updating profile:", err);
-    res.status(500).json({ message: "Server error while updating profile" });
   }
 });
 

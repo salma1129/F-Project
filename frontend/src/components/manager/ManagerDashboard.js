@@ -89,7 +89,8 @@ const UserInfo = styled.div`
 
 const DashboardContent = styled.div`
   max-width: 1200px;
-  margin: 0 auto;
+  margin-left: auto;
+  margin-right: 0;
   padding: 20px;
 `;
 
@@ -211,12 +212,37 @@ const ManagerDashboard = () => {
   // Get user data from localStorage (if available)
   const [userName, setUserName] = useState('Manager Name');
   
+  const [notification, setNotification] = useState("");
+  const [pendingCount, setPendingCount] = useState(0);
+
   useEffect(() => {
     // Get user data from localStorage if available
     const storedName = localStorage.getItem('userName');
     if (storedName) {
       setUserName(storedName);
     }
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetch('http://localhost:5001/api/leave-requests', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        }
+      })
+        .then(res => res.json())
+        .then(data => {
+          const pending = data.filter(req => req.status === 'Pending').length;
+          setPendingCount(pending);
+          if (pending > 0) {
+            setNotification(`You have ${pending} pending leave request(s).`);
+          } else {
+            setNotification("");
+          }
+        });
+    }, 5000);
+    return () => clearInterval(interval);
   }, []);
 
   const handleLeaveAction = (id, action) => {
@@ -238,13 +264,7 @@ const ManagerDashboard = () => {
       case 'dashboard':
         return (
           <>
-            <div className="dashboard-header">
-              <h1>Manager Dashboard</h1>
-              <div className="user-info">
-                <span className="user-name">{userName}</span>
-                <span className="user-role">Manager</span>
-              </div>
-            </div>
+           
             <DashboardContent>
               <StatsGrid>
                 <StatCard>
@@ -358,6 +378,12 @@ const ManagerDashboard = () => {
             </div>
             <div className="main-content">{renderContent()}</div>
           </div>
+          {notification && (
+            <div style={{ position: 'fixed', top: 30, right: 30, zIndex: 9999, background: '#e67e22', color: 'white', padding: '16px 28px', borderRadius: '8px', fontWeight: 'bold', boxShadow: '0 2px 12px rgba(0,0,0,0.15)' }}>
+              {notification}
+              <button style={{ marginLeft: 20, background: 'transparent', color: 'white', border: 'none', fontWeight: 'bold', cursor: 'pointer', fontSize: 18 }} onClick={() => setNotification("")}>×</button>
+            </div>
+          )}
         </Content>
       </MainContainer>
     </Container>

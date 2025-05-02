@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const LeaveRequest = require("../models/LeaveRequest");
 const auth = require("../Middleware/auth"); 
+const { validateLeaveRequest } = require("../Middleware/validate");
 
 // GET all leave requests
 router.get("/", auth, async (req, res) => {
@@ -21,14 +22,15 @@ router.post("/", auth, async (req, res) => {
       return res.status(403).json({ message: "Access denied. Employees only." });
     }
 
-    const { name, email, startDate, endDate, reason } = req.body;
+    const { name, email, startDate, endDate, reason, type } = req.body;
 
     const newLeaveRequest = new LeaveRequest({
       name,
       email,
-      startDate,
-      endDate,
+      startDate: new Date(startDate),
+      endDate: new Date(endDate),
       reason,
+      type,
       status: "Pending",
       userId: req.user.id
     });

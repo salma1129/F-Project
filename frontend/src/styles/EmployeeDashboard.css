@@ -306,6 +306,12 @@
   border: 1px solid rgba(231, 76, 60, 0.3);
 }
 
+.status.declined {
+  background-color: rgba(220, 53, 69, 0.2);
+  color: #dc3545;
+  border: 1px solid rgba(220, 53, 69, 0.3);
+}
+
 /* Leave Request Form Styles */
 .leave-request-section {
   animation: fadeIn 0.5s ease;

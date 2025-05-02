@@ -82,8 +82,7 @@ const Navbar = () => {
       fontWeight: '700',
       color: 'white',
       cursor: 'pointer',
-      textTransform: 'uppercase',
-      letterSpacing: '2px',
+      letterSpacing: '1px',
       textShadow: '0 0 15px rgba(52, 152, 219, 0.6)',
       paddingRight: '2rem',
       borderRight: '2px solid rgba(52, 152, 219, 0.3)',
@@ -91,7 +90,7 @@ const Navbar = () => {
     },
     brandHover: {
       color: '#3498db',
-      textShadow: '0 0 20px rgba(52, 152, 219, 0.8)',
+      textShadow: '0 0 20px rgba(52, 152, 219, 0.😎',
     }
   };
 
@@ -103,14 +102,14 @@ const Navbar = () => {
           onClick={() => navigate('/')}
           onMouseOver={e => {
             e.target.style.color = '#3498db';
-            e.target.style.textShadow = '0 0 20px rgba(52, 152, 219, 0.8)';
+            e.target.style.textShadow = '0 0 20px rgba(52, 152, 219, 0.😎';
           }}
           onMouseOut={e => {
             e.target.style.color = 'white';
             e.target.style.textShadow = '0 0 15px rgba(52, 152, 219, 0.6)';
           }}
         >
-          HR System
+         StafFlow
         </div>
         <div style={styles.navbarLeft}>
           <div
@@ -156,4 +155,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-

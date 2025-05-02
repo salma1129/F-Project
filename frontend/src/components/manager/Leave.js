@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -8,12 +8,18 @@ const Container = styled.div`
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  background-attachment: fixed;
   display: flex;
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow-y: auto;
 
   &::before {
     content: '';
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
@@ -22,18 +28,16 @@ const Container = styled.div`
     z-index: 1;
   }
 `;
-
 const MainContainer = styled.div`
   flex: 1;
-  margin-left: 90px;
-  margin-right: 90px;
-  padding: 40px;
+  margin-left: 280px;
+  padding: 40px 40px 40px 40px;
   position: relative;
   z-index: 2;
   min-height: 100vh;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: stretch;
 `;
 
 const Content = styled.div`
@@ -41,10 +45,11 @@ const Content = styled.div`
   border-radius: 20px;
   padding: 40px;
   width: 100%;
-  max-width: 1200px;
+  max-width: 1800px;
   color: white;
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  align-self: center;
 `;
 
 const Title = styled.h1`
@@ -113,46 +118,144 @@ const RejectButton = styled(ActionButton)`
   }
 `;
 
-const Leave = () => {
-  const [leaveRequests, setLeaveRequests] = useState([
-    { id: 1, name: "Roua Ladhari", email: "roua.ladhari@horizon-tech.tn", type: "Sick Leave", duration: "2 days" },
-    { id: 2, name: "Salma BenKhamsa", email: "salma.benkhamsa@horizon-tech.tn", type: "Annual Leave", duration: "5 days" },
-  ]);
+const Header = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 15px;
+  border-radius: 8px;
+`;
 
-  const handleAction = (id, action) => {
-    alert(`Leave request ${action} for ID: ${id}`);
+const UserInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+
+  .user-name {
+    font-weight: bold;
+    color: white;
+    font-size: 1.2rem;
+  }
+
+  .user-role {
+    color: #e0e0e0;
+    font-size: 0.9rem;
+  }
+`;
+
+const Leave = () => {
+  const [leaveRequests, setLeaveRequests] = useState([]);
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    type: '',
+    startDate: '',
+    endDate: '',
+    reason: ''
+  });
+  const [submitting, setSubmitting] = useState(false);
+  const [userName, setUserName] = useState('Manager Name');
+
+  useEffect(() => {
+    const fetchLeaveRequests = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch("http://localhost:5001/api/leave-requests", {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        if (!response.ok) throw new Error('Failed to fetch leave requests');
+        const data = await response.json();
+        setLeaveRequests(data);
+      } catch (error) {
+        setLeaveRequests([]);
+      }
+    };
+    fetchLeaveRequests();
+
+    // Get user data from localStorage if available
+    const storedName = localStorage.getItem('userName');
+    if (storedName) {
+      setUserName(storedName);
+    }
+  }, []);
+
+  const handleAction = async (id, action) => {
+    const newStatus = action === "approved" ? "Approved" : "Declined";
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`http://localhost:5001/api/leave-requests/${id}/status`, {
+        method: "PUT",
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ status: newStatus })
+      });
+      if (!response.ok) throw new Error('Failed to update leave request status');
+      // Update local state
+      setLeaveRequests(prev => prev.map(req => req._id === id ? { ...req, status: newStatus } : req));
+    } catch (error) {
+      alert('Failed to update leave request status.');
+    }
   };
 
   return (
     <Container>
       <MainContainer>
         <Content>
-          <Title>Leave Requests Management</Title>
+          <Header>
+            <Title>Manager Dashboard</Title>
+            <UserInfo>
+              <div className="user-name">{userName}</div>
+              <div className="user-role">Manager</div>
+            </UserInfo>
+          </Header>
           <Table>
             <thead>
               <tr>
                 <th>#</th>
                 <th>Name</th>
                 <th>Email</th>
-                <th>Leave Type</th>
-                <th>Duration</th>
+                <th>Type</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Reason</th>
+                <th>Status</th>
                 <th>Action</th>
               </tr>
             </thead>
             <tbody>
-              {leaveRequests.map((request) => (
-                <tr key={request.id}>
-                  <td>{request.id}</td>
-                  <td>{request.name}</td>
-                  <td>{request.email}</td>
-                  <td>{request.type}</td>
-                  <td>{request.duration}</td>
-                  <td>
-                    <ApproveButton onClick={() => handleAction(request.id, "approved")}>Approve</ApproveButton>
-                    <RejectButton onClick={() => handleAction(request.id, "rejected")}>Reject</RejectButton>
-                  </td>
-                </tr>
-              ))}
+              {leaveRequests.length === 0 ? (
+                <tr><td colSpan="9">No leave requests found.</td></tr>
+              ) : (
+                leaveRequests.map((request, idx) => (
+                  <tr key={request._id}>
+                    <td>{idx + 1}</td>
+                    <td>{request.name}</td>
+                    <td>{request.email}</td>
+                    <td>{request.type}</td>
+                    <td>{new Date(request.startDate).toLocaleDateString()}</td>
+                    <td>{new Date(request.endDate).toLocaleDateString()}</td>
+                    <td>{request.reason}</td>
+                    <td className={`status ${request.status ? request.status.toLowerCase() : ''}`}>{request.status}</td>
+                    <td>
+                      {request.status === 'Pending' ? (
+                        <>
+                          <ApproveButton onClick={() => handleAction(request._id, "approved")}>Approve</ApproveButton>
+                          <RejectButton onClick={() => handleAction(request._id, "rejected")}>Reject</RejectButton>
+                        </>
+                      ) : (
+                        <span style={{ fontWeight: 'bold', color: request.status === 'Approved' ? '#28a745' : '#dc3545' }}>{request.status}</span>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </Table>
         </Content>

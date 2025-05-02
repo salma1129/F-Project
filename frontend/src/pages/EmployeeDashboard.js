@@ -36,6 +36,7 @@ const EmployeeDashboard = () => {
   const [activeSection, setActiveSection] = useState('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [userData, setUserData] = useState(null);
+  const [leaveRequests, setLeaveRequests] = useState([]);
 
   useEffect(() => {
     // Fetch user data from backend when component mounts
@@ -65,7 +66,13 @@ const EmployeeDashboard = () => {
         setProfileData(prevState => ({
           ...prevState,
           name: data.name || prevState.name,
-          email: data.email || prevState.email
+          email: data.email || prevState.email,
+          department: data.department || prevState.department,
+          role: data.role || prevState.role,
+          phone: data.phone || prevState.phone,
+          address: data.address || prevState.address,
+          joiningDate: data.joiningDate || prevState.joiningDate,
+          employeeId: data.employeeId || prevState.employeeId
         }));
         
         // Update form data with fetched user data
@@ -80,6 +87,37 @@ const EmployeeDashboard = () => {
     };
 
     fetchUserData();
+  }, [navigate]);
+
+  useEffect(() => {
+    // Fetch leave requests from backend when component mounts
+    const fetchLeaveRequests = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          navigate('/login');
+          return;
+        }
+
+        const response = await fetch('http://localhost:5001/api/leave-requests', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch leave requests');
+        }
+
+        const data = await response.json();
+        setLeaveRequests(data);
+      } catch (error) {
+        console.error('Error fetching leave requests:', error);
+      }
+    };
+
+    fetchLeaveRequests();
   }, [navigate]);
 
   const toggleSidebar = () => {
@@ -245,18 +283,20 @@ const EmployeeDashboard = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>2024-03-15</td>
-                      <td>2024-03-17</td>
-                      <td>Family vacation</td>
-                      <td className="status approved">Approved</td>
-                    </tr>
-                    <tr>
-                      <td>2024-04-01</td>
-                      <td>2024-04-03</td>
-                      <td>Medical appointment</td>
-                      <td className="status pending">Pending</td>
-                    </tr>
+                    {leaveRequests && leaveRequests.length === 0 ? (
+                      <tr><td colSpan="6">No leave requests found.</td></tr>
+                    ) : (
+                      leaveRequests && leaveRequests.map((req) => (
+                        <tr key={req._id}>
+                          <td>{req.name}</td>
+                          <td>{req.email}</td>
+                          <td>{new Date(req.startDate).toLocaleDateString()}</td>
+                          <td>{new Date(req.endDate).toLocaleDateString()}</td>
+                          <td>{req.reason}</td>
+                          <td className={`status ${req.status ? req.status.toLowerCase() : ''}`}>{req.status}</td>
+                        </tr>
+                      ))
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -452,42 +492,29 @@ const EmployeeDashboard = () => {
                 <table>
                   <thead>
                     <tr>
+                      <th>Name</th>
+                      <th>Email</th>
                       <th>Start Date</th>
                       <th>End Date</th>
-                      <th>Days</th>
                       <th>Reason</th>
                       <th>Status</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>2024-03-15</td>
-                      <td>2024-03-17</td>
-                      <td>3</td>
-                      <td>Family vacation</td>
-                      <td className="status approved">Approved</td>
-                    </tr>
-                    <tr>
-                      <td>2024-04-01</td>
-                      <td>2024-04-03</td>
-                      <td>3</td>
-                      <td>Medical appointment</td>
-                      <td className="status pending">Pending</td>
-                    </tr>
-                    <tr>
-                      <td>2024-01-10</td>
-                      <td>2024-01-12</td>
-                      <td>3</td>
-                      <td>Personal work</td>
-                      <td className="status approved">Approved</td>
-                    </tr>
-                    <tr>
-                      <td>2023-11-22</td>
-                      <td>2023-11-24</td>
-                      <td>3</td>
-                      <td>Family event</td>
-                      <td className="status approved">Approved</td>
-                    </tr>
+                    {leaveRequests && leaveRequests.length === 0 ? (
+                      <tr><td colSpan="6">No leave requests found.</td></tr>
+                    ) : (
+                      leaveRequests && leaveRequests.map((req) => (
+                        <tr key={req._id}>
+                          <td>{req.name}</td>
+                          <td>{req.email}</td>
+                          <td>{new Date(req.startDate).toLocaleDateString()}</td>
+                          <td>{new Date(req.endDate).toLocaleDateString()}</td>
+                          <td>{req.reason}</td>
+                          <td className={`status ${req.status ? req.status.toLowerCase() : ''}`}>{req.status}</td>
+                        </tr>
+                      ))
+                    )}
                   </tbody>
                 </table>
               </div>

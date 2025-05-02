@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import '../styles/EmployeeDashboard.css';
 
 const EmployeeDashboard = () => {
@@ -7,10 +7,58 @@ const EmployeeDashboard = () => {
     email: '',
     startDate: '',
     endDate: '',
-    reason: ''
+    reason: '',
+    type: 'vacation'
   });
   const [activeSection, setActiveSection] = useState('dashboard');
   const [showLeaveForm, setShowLeaveForm] = useState(false);
+  const [leaveRequests, setLeaveRequests] = useState([]);
+  const [notification, setNotification] = useState("");
+  const lastStatuses = useRef({});
+
+  useEffect(() => {
+    if (activeSection === 'dashboard' || activeSection === 'leaveRequests') {
+      fetchLeaveRequests();
+    }
+    // eslint-disable-next-line
+  }, [activeSection]);
+
+  // Improved polling for leave request status changes
+  useEffect(() => {
+    const poll = async () => {
+      await fetchLeaveRequests();
+      leaveRequests.forEach(req => {
+        if (lastStatuses.current[req._id] && lastStatuses.current[req._id] !== req.status) {
+          if (req.status === 'Approved') {
+            setNotification('Your leave request has been approved!');
+          } else if (req.status === 'Declined') {
+            setNotification('Your leave request has been declined.');
+          }
+        }
+      });
+      lastStatuses.current = Object.fromEntries(leaveRequests.map(req => [req._id, req.status]));
+    };
+    poll();
+    const interval = setInterval(poll, 5000);
+    return () => clearInterval(interval);
+  }, [leaveRequests]);
+
+  const fetchLeaveRequests = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('http://localhost:5001/api/leave-requests', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (!response.ok) throw new Error('Failed to fetch leave requests');
+      const data = await response.json();
+      setLeaveRequests(data);
+    } catch (error) {
+      setLeaveRequests([]);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -39,7 +87,11 @@ const EmployeeDashboard = () => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({
+          ...formData,
+          startDate: new Date(formData.startDate).toISOString(),
+          endDate: new Date(formData.endDate).toISOString()
+        })
       });
 
       if (!response.ok) {
@@ -52,10 +104,12 @@ const EmployeeDashboard = () => {
         email: '',
         startDate: '',
         endDate: '',
-        reason: ''
+        reason: '',
+        type: 'vacation'
       });
 
       alert('Leave request submitted successfully!');
+      fetchLeaveRequests();
     } catch (error) {
       console.error('Error submitting leave request:', error);
       alert('Failed to submit leave request. Please try again.');
@@ -127,6 +181,8 @@ const EmployeeDashboard = () => {
                 <table>
                   <thead>
                     <tr>
+                      <th>Name</th>
+                      <th>Email</th>
                       <th>Start Date</th>
                       <th>End Date</th>
                       <th>Reason</th>
@@ -134,18 +190,20 @@ const EmployeeDashboard = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>2024-03-15</td>
-                      <td>2024-03-17</td>
-                      <td>Family vacation</td>
-                      <td className="status approved">Approved</td>
-                    </tr>
-                    <tr>
-                      <td>2024-04-01</td>
-                      <td>2024-04-03</td>
-                      <td>Medical appointment</td>
-                      <td className="status pending">Pending</td>
-                    </tr>
+                    {leaveRequests.length === 0 ? (
+                      <tr><td colSpan="6">No leave requests found.</td></tr>
+                    ) : (
+                      leaveRequests.map((req) => (
+                        <tr key={req._id}>
+                          <td>{req.name}</td>
+                          <td>{req.email}</td>
+                          <td>{new Date(req.startDate).toLocaleDateString()}</td>
+                          <td>{new Date(req.endDate).toLocaleDateString()}</td>
+                          <td>{req.reason}</td>
+                          <td className={`status ${req.status ? req.status.toLowerCase() : ''}`}>{req.status}</td>
+                        </tr>
+                      ))
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -209,6 +267,20 @@ const EmployeeDashboard = () => {
                   required
                 />
               </div>
+              <div className="form-group">
+                <label htmlFor="type">Leave Type</label>
+                <select
+                  id="type"
+                  name="type"
+                  value={formData.type}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="vacation">Vacation</option>
+                  <option value="sick">Sick Leave</option>
+                  <option value="personal">Personal Leave</option>
+                </select>
+              </div>
               <button type="submit" className="submit-btn">Submit Request</button>
             </form>
           </div>
@@ -216,6 +288,12 @@ const EmployeeDashboard = () => {
           <div className="section-content">
             <h2>{activeSection.charAt(0).toUpperCase() + activeSection.slice(1)}</h2>
             <p>This section is under development.</p>
+          </div>
+        )}
+        {notification && (
+          <div style={{ position: 'fixed', top: 30, right: 30, zIndex: 9999, background: '#3498db', color: 'white', padding: '16px 28px', borderRadius: '8px', fontWeight: 'bold', boxShadow: '0 2px 12px rgba(0,0,0,0.15)' }}>
+            {notification}
+            <button style={{ marginLeft: 20, background: 'transparent', color: 'white', border: 'none', fontWeight: 'bold', cursor: 'pointer', fontSize: 18 }} onClick={() => setNotification("")}>×</button>
           </div>
         )}
       </div>

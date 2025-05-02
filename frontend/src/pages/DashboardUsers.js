@@ -5,7 +5,7 @@ import LeaveRequests from "../components/LeaveRequests";
 
 const DashboardUsers = () => {
   const [users, setUsers] = useState([]);
-  const [form, setForm] = useState({ name: "", email: "" });
+  const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [editingUser, setEditingUser] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [activeSection, setActiveSection] = useState("users");
@@ -63,7 +63,7 @@ const DashboardUsers = () => {
 
     const userData = editingUser
       ? { name: form.name, email: form.email }
-      : { name: form.name, email: form.email, password: "defaultPassword123" };
+      : { name: form.name, email: form.email, password: form.password };
 
     try {
       const token = localStorage.getItem("token");
@@ -82,7 +82,7 @@ const DashboardUsers = () => {
       }
 
       fetchUsers();
-      setForm({ name: "", email: "" });
+      setForm({ name: "", email: "", password: "" });
       setEditingUser(null);
     } catch (error) {
       console.error("Error:", error);
@@ -149,6 +149,18 @@ const DashboardUsers = () => {
                     required
                   />
                 </div>
+                {!editingUser && (
+                  <div className="form-group">
+                    <input
+                      type="password"
+                      name="password"
+                      placeholder="Password"
+                      value={form.password}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                )}
                 <button type="submit" className="submit-btn">
                   {editingUser ? "Update" : "Create"} User
                 </button>

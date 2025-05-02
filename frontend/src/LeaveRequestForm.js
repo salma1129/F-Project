@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 //import './LeaveRequestForm.css';
 
 const LeaveRequestForm = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -9,6 +11,7 @@ const LeaveRequestForm = () => {
     endDate: '',
     reason: ''
   });
+  const [error, setError] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -17,6 +20,7 @@ const LeaveRequestForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
     try {
       const token = localStorage.getItem('token');
       const response = await fetch('http://localhost:5001/api/leave-requests', {
@@ -28,18 +32,24 @@ const LeaveRequestForm = () => {
         body: JSON.stringify(formData)
       });
 
-      if (!response.ok) throw new Error('Failed to submit leave request');
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to submit leave request');
+      }
 
-      alert('Leave request submitted!');
+      alert('Leave request submitted successfully!');
       setFormData({ name: '', email: '', startDate: '', endDate: '', reason: '' });
+      // Navigate to the leave requests page after successful submission
+      navigate('/employee/leave-requests');
     } catch (err) {
-      alert('Error submitting leave request.');
+      setError(err.message || 'Error submitting leave request.');
     }
   };
 
   return (
     <div className="leave-request-form-page">
       <h2>Request Leave</h2>
+      {error && <div className="error-message">{error}</div>}
       <form onSubmit={handleSubmit} className="leave-form">
         <label>Name</label>
         <input name="name" value={formData.name} onChange={handleChange} required />

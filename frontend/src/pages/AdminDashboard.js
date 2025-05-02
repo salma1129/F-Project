@@ -76,7 +76,7 @@ const AdminDashboard = () => {
     e.preventDefault();
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5001/api/users/create', {
+      const response = await fetch('http://localhost:5001/api/users', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -114,17 +114,21 @@ const AdminDashboard = () => {
 
     try {
       const token = localStorage.getItem('token');
+      const updateBody = {
+        name: editingUser.name,
+        email: editingUser.email,
+        role: editingUser.role
+      };
+      if (editingUser.password && editingUser.password.length >= 6) {
+        updateBody.password = editingUser.password;
+      }
       const response = await fetch(`http://localhost:5001/api/users/${editingUser._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({
-          name: editingUser.name,
-          email: editingUser.email,
-          role: editingUser.role
-        })
+        body: JSON.stringify(updateBody)
       });
 
       if (!response.ok) {
@@ -132,15 +136,13 @@ const AdminDashboard = () => {
       }
 
       const updatedUser = await response.json();
-   
-      // ✅ Update users in local state with updated role - optimistically update the UI
+
       setUsers(prevUsers =>
-        prevUsers.map(user => user._id === editingUser._id ? {...user, ...updatedUser} : user)
+        prevUsers.map(user => user._id === editingUser._id ? { ...user, ...updatedUser } : user)
       );
-   
-      setEditingUser(null); // Clear edit mode
-   
-      alert('User updated successfully!'); // ✅ Notify success
+
+      setEditingUser(null);
+      alert('User updated successfully!');
     } catch (err) {
       console.error('Error updating user:', err);
       alert(`Error: ${err.message}`);
@@ -191,243 +193,186 @@ const AdminDashboard = () => {
       </div>
 
       <div className="home-container full-page">
-        <div className="home-content" style={{ paddingTop: "80px" }}>
-          <div className="admin-tabs">
-            <button 
-              className={`admin-tab ${activeTab === 'users' ? 'active' : ''}`}
-              onClick={() => setActiveTab('users')}
-            >
-              User Management
-            </button>
-            <button 
-              className={`admin-tab ${activeTab === 'redirects' ? 'active' : ''}`}
-              onClick={() => setActiveTab('redirects')}
-            >
-              Role Redirects
-            </button>
-            <button 
-              className={`admin-tab ${activeTab === 'hr' ? 'active' : ''}`}
-              onClick={() => setActiveTab('hr')}
-            >
-              HR Officers
-            </button>
-          </div>
+        <div className="home-content" style={{ paddingTop: "800px" }}>
+          <div className="admin-section" style={{ marginTop: '440px' }}>
+            <h2>User Management</h2>
+            
+            <div className="search-box">
+              <input
+                type="text"
+                placeholder="Search users..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="search-input"
+              />
+            </div>
 
-          {activeTab === 'users' && (
-            <div className="admin-section">
-              <h2>User Management</h2>
-              
-              <div className="search-box">
-                <input
-                  type="text"
-                  placeholder="Search users..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="search-input"
-                />
-              </div>
-
-              {loading ? (
-                <div className="loading">Loading users...</div>
-              ) : error ? (
-                <div className="error">{error}</div>
-              ) : (
-                <div className="user-table-container">
-                  <table className="user-table">
-                    <thead>
-                      <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Role</th>
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredUsers.map(user => (
-                        <tr key={user._id}>
-                          <td>{user.name}</td>
-                          <td>{user.email}</td>
-                          <td>
-                            {editingUser && editingUser._id === user._id ? (
-                              <select
-                                name="role"
-                                value={editingUser.role}
+            {loading ? (
+              <div className="loading">Loading users...</div>
+            ) : error ? (
+              <div className="error">{error}</div>
+            ) : (
+              <div className="user-table-container">
+                <table className="user-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th>Role</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredUsers.map(user => (
+                      <tr key={user._id}>
+                        <td>
+                          {editingUser && editingUser._id === user._id ? (
+                            <input
+                              type="text"
+                              name="name"
+                              value={editingUser.name}
+                              onChange={handleInputChange}
+                              required
+                            />
+                          ) : (
+                            user.name
+                          )}
+                        </td>
+                        <td>
+                          {editingUser && editingUser._id === user._id ? (
+                            <input
+                              type="email"
+                              name="email"
+                              value={editingUser.email}
+                              onChange={handleInputChange}
+                              required
+                            />
+                          ) : (
+                            user.email
+                          )}
+                        </td>
+                        <td>
+                          {editingUser && editingUser._id === user._id ? (
+                            <select
+                              name="role"
+                              value={editingUser.role}
+                              onChange={handleInputChange}
+                              className="role-select"
+                            >
+                              <option value="admin">Admin</option>
+                              <option value="hr">HR</option>
+                              <option value="manager">Manager</option>
+                              <option value="employee">Employee</option>
+                              <option value="candidate">Candidate</option>
+                            </select>
+                          ) : (
+                            <span className={`role-badge ${user.role}`}>{user.role}</span>
+                          )}
+                        </td>
+                        <td className="action-buttons">
+                          {editingUser && editingUser._id === user._id ? (
+                            <>
+                              <input
+                                type="password"
+                                name="password"
+                                value={editingUser.password || ''}
                                 onChange={handleInputChange}
-                                className="role-select"
-                              >
-                                <option value="admin">Admin</option>
-                                <option value="hr">HR</option>
-                                <option value="manager">Manager</option>
-                                <option value="employee">Employee</option>
-                                <option value="candidate">Candidate</option>
-                              </select>
-                            ) : (
-                              <span className={`role-badge ${user.role}`}>{user.role}</span>
-                            )}
-                          </td>
-                          <td className="action-buttons">
-                            {editingUser && editingUser._id === user._id ? (
-                              <>
-                                <button className="btn-save" onClick={handleUpdateUser}>
-                                  <i className="fas fa-check"></i> Save
-                                </button>
-                                <button className="btn-cancel" onClick={() => setEditingUser(null)}>
-                                  <i className="fas fa-times"></i> Cancel
-                                </button>
-                              </>
-                            ) : (
-                              <>
-                                <button className="btn-edit" onClick={() => setEditingUser(user)}>
-                                  <i className="fas fa-edit"></i> Edit
-                                </button>
-                                <button className="btn-delete" onClick={() => handleDeleteUser(user._id)}>
-                                  <i className="fas fa-trash"></i> Delete
-                                </button>
-                              </>
-                            )}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-
-              <div className="user-form-container">
-                <h3>Create New User</h3>
-                <form onSubmit={handleCreateUser} className="user-form">
-                  <div className="form-group">
-                    <label htmlFor="name">Name</label>
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      value={newUser.name}
-                      onChange={handleInputChange}
-                      placeholder="Enter full name"
-                      required
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label htmlFor="email">Email</label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      value={newUser.email}
-                      onChange={handleInputChange}
-                      placeholder="Enter email address"
-                      required
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label htmlFor="password">Password</label>
-                    <input
-                      type="password"
-                      id="password"
-                      name="password"
-                      value={newUser.password}
-                      onChange={handleInputChange}
-                      placeholder="Enter password"
-                      required
-                      minLength={6}
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label htmlFor="role">Role</label>
-                    <select
-                      id="role"
-                      name="role"
-                      value={newUser.role}
-                      onChange={handleInputChange}
-                      required
-                      className="role-select-form"
-                    >
-                      <option value="admin">Admin</option>
-                      <option value="hr">HR</option>
-                      <option value="manager">Manager</option>
-                      <option value="employee">Employee</option>
-                      <option value="candidate">Candidate</option>
-                    </select>
-                  </div>
-
-                  <button type="submit" className="btn-submit">
-                    <i className="fas fa-user-plus"></i> Create User
-                  </button>
-                </form>
+                                placeholder="New password "
+                                minLength={6}
+                                style={{ marginRight: 8 }}
+                              />
+                              <button className="btn-save" onClick={handleUpdateUser}>
+                                <i className="fas fa-check"></i> Save
+                              </button>
+                              <button className="btn-cancel" onClick={() => setEditingUser(null)}>
+                                <i className="fas fa-times"></i> Cancel
+                              </button>
+                            </>
+                          ) : (
+                            <>
+                              <button className="btn-edit" onClick={() => setEditingUser(user)}>
+                                <i className="fas fa-edit"></i> Edit
+                              </button>
+                              <button className="btn-delete" onClick={() => handleDeleteUser(user._id)}>
+                                <i className="fas fa-trash"></i> Delete
+                              </button>
+                            </>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-            </div>
-          )}
+            )}
 
-          {activeTab === 'redirects' && (
-            <div className="admin-section">
-              <h2>Role Redirects Configuration</h2>
-              <div className="role-redirects-info">
-                <div className="redirect-item">
-                  <h3>Admin</h3>
-                  <p>Redirects to: <span className="redirect-path">/admin-dashboard</span></p>
-                  <p>Can access: All pages and features</p>
+            <div className="user-form-container">
+              <h3>Create New User</h3>
+              <form onSubmit={handleCreateUser} className="user-form">
+                <div className="form-group">
+                  <label htmlFor="name">Name</label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={newUser.name}
+                    onChange={handleInputChange}
+                    placeholder="Enter full name"
+                    required
+                  />
                 </div>
-                <div className="redirect-item">
-                  <h3>HR</h3>
-                  <p>Redirects to: <span className="redirect-path">/hr-dashboard</span></p>
-                  <p>Can access: HR related pages, Employee management, Recruitment</p>
-                </div>
-                <div className="redirect-item">
-                  <h3>Manager</h3>
-                  <p>Redirects to: <span className="redirect-path">/manager-dashboard</span></p>
-                  <p>Can access: Team management, Approvals, Reports</p>
-                </div>
-                <div className="redirect-item">
-                  <h3>Employee</h3>
-                  <p>Redirects to: <span className="redirect-path">/employee-dashboard</span></p>
-                  <p>Can access: Personal profile, Leave requests, Tasks</p>
-                </div>
-                <div className="redirect-item">
-                  <h3>Candidate</h3>
-                  <p>Redirects to: <span className="redirect-path">/job-opportunities</span></p>
-                  <p>Can access: Job listings, Applications, Profile</p>
-                </div>
-              </div>
-            </div>
-          )}
 
-          {activeTab === 'hr' && (
-            <div className="admin-section">
-              <h2>HR Officers Management</h2>
-              <div className="hr-officers">
-                {users
-                  .filter(user => user.role === 'hr')
-                  .map(hrOfficer => (
-                    <div key={hrOfficer._id} className="hr-officer-card">
-                      <div className="hr-officer-name">{hrOfficer.name}</div>
-                      <div className="hr-officer-email">{hrOfficer.email}</div>
-                      <div className="hr-officer-stats">
-                        <div className="stat">
-                          <span className="stat-label">Candidates:</span> 
-                          <span className="stat-value">12</span>
-                        </div>
-                        <div className="stat">
-                          <span className="stat-label">Hires:</span> 
-                          <span className="stat-value">5</span>
-                        </div>
-                        <div className="stat">
-                          <span className="stat-label">Active:</span> 
-                          <span className="stat-value">Yes</span>
-                        </div>
-                      </div>
-                      <div className="hr-officer-actions">
-                        <button className="btn-view">View Details</button>
-                        <button className="btn-edit" onClick={() => setEditingUser(hrOfficer)}>Edit Role</button>
-                      </div>
-                    </div>
-                  ))}
-              </div>
+                <div className="form-group">
+                  <label htmlFor="email">Email</label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={newUser.email}
+                    onChange={handleInputChange}
+                    placeholder="Enter email address"
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="password">Password</label>
+                  <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    value={newUser.password}
+                    onChange={handleInputChange}
+                    placeholder="Enter password"
+                    required
+                    minLength={6}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="role">Role</label>
+                  <select
+                    id="role"
+                    name="role"
+                    value={newUser.role}
+                    onChange={handleInputChange}
+                    required
+                    className="role-select-form"
+                  >
+                    <option value="admin">Admin</option>
+                    <option value="hr">HR</option>
+                    <option value="manager">Manager</option>
+                    <option value="employee">Employee</option>
+                    <option value="candidate">Candidate</option>
+                  </select>
+                </div>
+
+                <button type="submit" className="btn-submit">
+                  <i className="fas fa-user-plus"></i> Create User
+                </button>
+              </form>
             </div>
-          )}
+          </div>
         </div>
       </div>
     </div>

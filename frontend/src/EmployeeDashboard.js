@@ -28,12 +28,21 @@ const EmployeeDashboard = () => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({
+          ...formData,
+          startDate: new Date(formData.startDate).toISOString(),
+          endDate: new Date(formData.endDate).toISOString()
+        })
       });
-
+      
+      const data = await response.json();
+      console.log('Response status:', response.status);
+      console.log('Response body:', data);
+      
       if (!response.ok) {
-        throw new Error('Failed to submit leave request');
+        throw new Error(data.message || 'Failed to submit leave request');
       }
+      
 
       // Reset form
       setFormData({

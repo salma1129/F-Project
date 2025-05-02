@@ -14,6 +14,8 @@ import ManagerDashboard from "./components/manager/ManagerDashboard";
 import Leave from "./components/manager/Leave";
 import JobOffering from "./components/manager/JobOffering";
 import AdminDashboard from "./pages/AdminDashboard";
+import About from "./components/About";
+import Contact from "./components/Contact";
 
 const ProtectedRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem('token');
@@ -48,6 +50,8 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
 
         <Route path="/job-opportunities" element={<JobOpportunities />} />
         <Route path="/leave" element={<Leave />} />
